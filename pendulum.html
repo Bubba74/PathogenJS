@@ -1,0 +1,180 @@
+<body>
+
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRg6gKmAMEbkfMciy0gD5xvnsPREX57-wjmJZ5c3gSVHkC-mdt2MA" width=300 >
+
+<hr>
+<p> My name is <strong>HENRY!!!!</strong> </p>
+
+<div>
+	<canvas id="canvas" width=600 height=400 display=inline></canvas>
+	<div id="chat-box" display=inline>
+		Hello there!</br>
+		Hi!</br>
+	</div>
+</div>
+
+<button id="bg" type="button" onclick="changeBg()">Hello!</button>
+<button id="count" type="button" onclick="count(49)">Count</button>
+<label id="score">0</label>
+<label id="debug">Debug</label>
+
+<---  Form for sending data to server --->
+<form method="get">
+  <div>
+    <label for="say">What greeting do you want to say?</label>
+    <input name="say" id="say" value="Hi">
+  </div>
+  <div>
+    <label for="to">Who do you want to say it to?</label>
+    <input name="to" id="to" value="Mom">
+  </div>
+  <div>
+    <button>Send my greetings</button>
+  </div>
+</form>
+
+</br>
+<button id="server-request" onclick="serverRequest()">Get Time</button>
+<label for="chat-entry">Chat: </label>
+<input name="chat-entry" id = "chat-entry" onkeydown="send_chat(this)">
+
+<script>
+
+  chat_count = 0
+  chat_entry = document.getElementById('chat-box')
+
+  sync();
+  function sync(){
+	console.log("Index: "+chat_count)
+	obj = {index:chat_count};
+ 	fetch('/update', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify(obj)})
+    	.then(function(response) {
+		return response.json();
+	})
+	.then(function(data) {
+		data.messages.forEach(function (msg){
+			chat_entry.innerHTML += msg + '</br>'
+			chat_count += 1
+		})
+	})
+	.then(function() {
+		setTimeout(sync, 1000)
+	})
+  }//button function
+
+  function send_chat(chat_box){
+	if (event.key != 'Enter') return;
+	msg = chat_box.value
+	chat_box.value = ""
+	obj = {msg: msg}
+	console.log("Sending message: "+msg);
+	
+	fetch('/new-chat', {method: 'POST', headers:{'Content-Type': 'application/json'}, body: JSON.stringify(obj)});
+  }
+
+  class Pendulum{
+    // var x, y, length, angle;
+    // var v=0, a;
+    constructor(x, y, length, theta){
+      this.x = x;
+      this.y = y;
+      this.length = length;
+      
+      this.theta = theta;
+      this.v = 0;
+      this.a = 0;
+      
+    }
+    
+    update(){
+      this.a = -this.theta/100;
+      this.v += this.a;
+      this.theta += this.v;
+    }
+    
+    render(context){
+      ctx.beginPath();
+      ctx.moveTo(this.x,this.y);
+      ctx.lineTo(this.x+this.length*Math.sin(this.theta),this.y+this.length*Math.cos(this.theta));
+      ctx.stroke();
+    }
+    
+    setLoc(x, y){
+      this.x = x;
+      this.y = y;
+    }
+  }
+
+  var score = 0;
+  function changeBg(){
+    document.body.background = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRg6gKmAMEbkfMciy0gD5xvnsPREX57-wjmJZ5c3gSVHkC-mdt2MA";
+  }
+  function count(rec){
+    score++;
+    document.getElementById("score").innerHTML = score;
+    
+    if (rec > 0){
+      setTimeout(function(){count(rec-1)}, 50);
+    }
+  }
+  
+  var c = document.getElementById("canvas");
+  var ctx = c.getContext("2d");
+  ctx.moveTo(0,0);
+  ctx.lineTo(600,0);
+  ctx.lineTo(600,400);
+  ctx.lineTo(0,400);
+  ctx.lineTo(0,0);
+  ctx.stroke();
+  
+  var L = 100;
+  var theta = 0.4;
+  var v=0, a;
+  var pen1 = new Pendulum(300,100, 100, 2),
+           pen2 = new Pendulum(300,100, 100, 0.8);
+  
+  var lastTime = Date.now();
+  
+  function update(){
+    lastTime = Date.now();
+    
+    ctx.clearRect(1, 1, 598, 398);
+    
+    ctx.fillStyle = "#AA33BB";
+    
+    pen1.render(ctx);
+    pen2.render(ctx);
+    
+    // ctx.fillStyle = "#FFFFFF";
+    // ctx.globalAlpha = 1;
+    // ctx.fillRect(x-5, y-5, 10, 10);
+  
+    pen1.update();
+    pen2.update();
+    
+    var delta = Date.now()-lastTime;
+
+    setTimeout(update, 20);
+    // document.getElementById("debug").innerHTML = "Debug\n"+score;
+    document.getElementById("debug").innerHTML = "FPS: "+(1000/delta);
+    // document.getElementById("score").innerHTML = "X: "+(300+L*Math.sin(theta));
+  }//update
+  
+  setTimeout(update, 20);
+  setTimeout(function(){
+    ctx.scale(0.5, 0.5);
+  }, 5000);
+
+  canvas = document.getElementById("canvas");
+  canvas.addEventListener('click', function (event){
+    x = event.pageX-canvas.offsetLeft; y = event.pageY-canvas.offsetTop;
+    console.log("X: "+x+" Y: "+y)
+    if (42 < x && x < 60 && 20 < y && y < 30)
+	console.log("You clicked the secret box1")
+  })
+</script>
+
+
+</body>
+
+
