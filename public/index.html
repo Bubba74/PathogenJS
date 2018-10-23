@@ -19,7 +19,9 @@
 
 <body>
 <canvas id="game-canvas" class="pathogen-window"></canvas>
-<input id="level" style="position: absolute; top: 20; left:20;"></input>
+<input id="level" style="position: absolute; top: 20; left:20;" value="1"></input>
+
+<div>
 
 
 
@@ -35,6 +37,7 @@
 	game = new Pathogen(canvas);
 	game.render();
 
+	player = 1;
 	canvas.addEventListener("click", function(event){
 		let mx = event.pageX;
 		let my = event.pageY;
@@ -46,7 +49,9 @@
 
 		let level = parseInt(level_input.value);
 
-		game.click(mx, my, level);
+		let validMove = game.click(mx, my, player, level);
+		if (validMove)
+			player = 1-player;
 	});
 </script>
 

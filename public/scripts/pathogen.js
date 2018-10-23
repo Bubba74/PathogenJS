@@ -38,22 +38,26 @@ function draw_tile(ctx, x, y, r, owner, level){
 	if (owner == -1)
 		ctx.fillRect(x-0.75*r, y-0.75*r, 1.5*r, 1.5*r);
 	else {
-		ctx.beginPath();
-		ctx.arc(x,y,r,0,2*Math.PI, false);
-		ctx.fill();
-
-		if (level > 1){
+		if (level > 3){
+			ctx.fillStyle = get_color(owner);
+			ctx.fillRect(x-0.75*r, y-0.75*r, 1.5*r, 1.5*r);
+		} else {
 			ctx.beginPath();
-			ctx.strokeStyle = "#FFFFFF";
-			ctx.lineWidth = 2;
-			ctx.arc(x,y,4.0*r/5,0,2*Math.PI, false);
-			ctx.stroke();
-		}
-		if (level > 2){
-			ctx.beginPath();
-			ctx.fillStyle = "#FFFFFF";
-			ctx.arc(x,y,r/5.0,0,2*Math.PI, false);
+			ctx.arc(x,y,3.0*r/5,0,2*Math.PI, false);
 			ctx.fill();
+			if (level > 1){
+				ctx.beginPath();
+				ctx.strokeStyle = "#FFFFFF";
+				ctx.lineWidth = 2;
+				ctx.arc(x,y,3.0*r/5,0,2*Math.PI, false);
+				ctx.stroke();
+			}
+			if (level > 2){
+				ctx.beginPath();
+				ctx.fillStyle = "#FFFFFF";
+				ctx.arc(x,y,r/5.0,0,2*Math.PI, false);
+				ctx.fill();
+			}
 		}
 	}
 }//draw_tile
@@ -67,12 +71,13 @@ class Pathogen {
 		this.canvas = canvas;
 		this.screen = canvas.getContext("2d");
 
+		let u=30, w=30, h=20;
 		this.board = {
-			unit: 20,
-			width: 60,
-			height: 40,
-			x: (this.width-1200)/2,
-			y: (this.height-800)/2
+			unit: u,
+			width: w,
+			height: h,
+			x: (this.width-u*w)/2,
+			y: (this.height-u*h)/2
 		};
 
 		let b = this.board;
@@ -100,12 +105,13 @@ class Pathogen {
 				this.tiles[i][j].modified = 0;
 	}//resetModifiers
 
-	upgradeCell(col, row, owner, waveLevel){
+	//override -- in the instance of a click, the cell should be
+	//	overridden to C-level, afterwards, don't override
+	upgradeCell(col, row, owner, waveLevel, override){
 		let tile = this.tiles[col][row];
 
 		if (tile.modified) return;
 
-		tile.modified = 1;
 		//i.e. if it's a B-level upgrade, C-cells ignore the change
 		if (tile.type > waveLevel) return;
 
@@ -114,15 +120,40 @@ class Pathogen {
 		//empty/A- cells upgrade to B-cells (and pass on A-wave)
 		//		TODO -- there might be ambiguity if two waves approach at different times
 		let newWaveLevel;
-		if (tile.type == waveLevel){
-			tile.type += 1;
-			newWaveLevel = waveLevel;
-		} else if (tile.type < waveLevel){
-			tile.type = waveLevel;
-			newWaveLevel = waveLevel-1;
+		//Special case for C-level wave
+		if (waveLevel == 3){
+			//Upgrade connected C-cells to walls
+			if (tile.type == waveLevel){
+				tile.type += 1;
+				newWaveLevel = waveLevel;
+				tile.owner = owner;
+				tile.modified = 1;
+			//If the c-cell was placed directly on the board,
+			//  turn the cell to a C-cell and emit a B-wave
+			} else if (override){
+				tile.type = waveLevel;
+				newWaveLevel = waveLevel-1;
+				tile.owner = owner;
+				tile.modified = 1;
+			//If the c-wave was spread from another c-cell,
+			//  do nothing
+			} else {
+				newWaveLevel = 0;
+			}
+		} else {
+			if (tile.type == waveLevel){
+				tile.type += 1;
+				newWaveLevel = waveLevel;
+			} else if (tile.type < waveLevel){
+				tile.type = waveLevel;
+				newWaveLevel = waveLevel-1;
+			}
+			tile.owner = owner;
+			tile.modified = 1;
 		}
-		tile.owner = owner;
 		this.upgradeAdjacent(col, row, owner, newWaveLevel);
+		if (override)
+			this.render();
 	}//upgradeCell
 
 	upgradeAdjacent(col, row, owner, waveLevel){
@@ -150,45 +181,90 @@ class Pathogen {
 
 	//TODO C-cell -> WALL does not emit C-level wave
 
-	click (col, row, type) {
+	isValidClick (col, row, new_owner, type){
+		let old_owner = this.tiles[col][row].owner;
+		let old_type  = this.tiles[col][row].type;
+
+		console.log("Checking click: "+[old_owner,old_type]+" --> "+[new_owner,type]);
+		//If empty cell
+		if (old_owner == -1) return true;
+		
+		//If owned
+		if (old_owner === new_owner){
+			//Action must be an upgrade
+			if (old_type <= type)
+				return true;
+			else { //i.e. no B-cell onto C-cell
+				this.clickError = "Cannot place a "+type+" on a "+old_type;
+				return false;
+			}
+		}
+		
+		//If not owned
+		if (old_owner !== new_owner){
+			console.log("Trying to take oppoenent's tile")
+			//Action must be a force upgrade
+			if (old_type < type)
+				return true;
+			else {
+				this.clickError = "Cannot place a "+type+" on an enemies "+old_type;
+				return false;
+			}
+		}
+
+	}//isValidClick
+
+	click (col, row, new_owner, type) {
 		if (this.waves.length) return;
+
+		if (type < 1) type = 1;
+		if (type > 3) type = 3;
 		
 		//Set it so no tiles have been modified
 		this.resetModifiers();
 
-		let new_owner = this.turn;
-		let old_owner = this.tiles[col][row].owner;
-		let old_type  = this.tiles[col][row].type;
 
-		let same_owner = (old_owner == -1 || new_owner == old_owner);
-		let upgrade_own_cell = same_owner && (old_type <= type);
-		if (upgrade_own_cell){
-			console.log("Upgrading cell!");
-			this.upgradeCell(col, row, new_owner, type);
+		//Check that the requested click is valid
+		if (!this.isValidClick(col, row, new_owner, type)) {
+			alert(this.clickError);
+			return false;
 		}
 
-		//After the initial germination, continuously update each wave by 1
-		while (this.waves.length){
-			//Swap waves and waves_buf arrays
-			let temp = this.waves;
-			this.waves = this.waves_buf;
-			this.waves_buf = temp;
-			
-			//Process spread for each wave
-			while (this.waves_buf.length){
-				let wave = this.waves_buf.pop();
-				this.upgradeCell(wave.x, wave.y, wave.owner, wave.level);
-			}
-		}
+		//Click must be valid, upgrade the target cell
+		console.log("Upgrading cell!");
+		this.upgradeCell(col, row, new_owner, type, true);
 
 		console.log("Clicked ["+col+","+row+"] "+new_owner+":"+type);
-		this.render();
-		this.turn = 1 - this.turn;
+		setTimeout(this.processWaves, 1000, this);
+		return true;
+	}//click
+
+	processWaves(obj){
+		console.log("Turn: "+obj.turn);
+		
+		//Swap waves and waves_buf arrays
+		let temp = obj.waves;
+		obj.waves = obj.waves_buf;
+		obj.waves_buf = temp;
+		console.log(obj.waves);
+		
+		//Process spread for each wave
+		while (obj.waves_buf.length){
+			let wave = obj.waves_buf.pop();
+			obj.upgradeCell(wave.x, wave.y, wave.owner, wave.level, false);
+		}
+		obj.render();
+	
+		if (obj.waves.length)
+			setTimeout(obj.processWaves, 1000, obj);
+		else
+			obj.turn = 1 - obj.turn;
 		
 	}//click
 
 
 	render () {
+		this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
 		this.renderBorder();
 		this.screen.strokeStyle = "#000000";
 		let b = this.board;
