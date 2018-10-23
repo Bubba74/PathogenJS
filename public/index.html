@@ -2,36 +2,52 @@
 <!DOCTYPE = html>
 
 
-<html>
+<html style="margin-left:0px; margin-top:0px; padding:0px;">
 <style>
 .pathogen-window {
-	border: 4px solid #FF0000;
+	border: 0px solid #FF0000;
 	background: #22222233;
+
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 </style>
 <head>
 	<title>Pathogen</title>
-	<link ref="shortcut icon" href="http://www.brianshim.com/webtricks/wp-content/uploads/2012/11/stars_favicon.png"/>
 </head>
 
 <body>
-<label><strong>-----</strong></label>
-
-</br>
 <canvas id="game-canvas" class="pathogen-window"></canvas>
+<input id="level" style="position: absolute; top: 20; left:20;"></input>
 
 
 
 
 <script src="scripts/pathogen.js"></script>
 <script>
+	level_input = document.getElementById("level");
+
 	canvas = document.getElementById("game-canvas")
+	canvas.width = document.body.clientWidth;
+	canvas.height = document.body.clientHeight;
 
-	game_config = [30, 20, 600, 400];
-
-	game = new Pathogen();
-	game.init(canvas, game_config)
+	game = new Pathogen(canvas);
 	game.render();
+
+	canvas.addEventListener("click", function(event){
+		let mx = event.pageX;
+		let my = event.pageY;
+		mx -= game.board.x;
+		my -= game.board.y;
+		mx = Math.floor(mx/game.board.unit);
+		my = Math.floor(my/game.board.unit);
+		console.log(event.buttons);
+
+		let level = parseInt(level_input.value);
+
+		game.click(mx, my, level);
+	});
 </script>
 
 
