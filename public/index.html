@@ -9,8 +9,8 @@
 	background: #22222233;
 
 	position: absolute;
-	top: 0;
 	left: 0;
+	top: 0;
 }
 </style>
 <head>
@@ -18,8 +18,11 @@
 </head>
 
 <body>
-<canvas id="game-canvas" class="pathogen-window"></canvas>
-<input id="level" style="position: absolute; top: 20; left:20;" value="1"></input>
+	<canvas id="game-canvas" class="pathogen-window"></canvas>
+	<!--
+	<input id="level" style="position: absolute; top: 20; left:20;" value="1"></input>
+	--!>
+</table>
 
 <div>
 
@@ -28,6 +31,7 @@
 
 <script src="scripts/pathogen.js"></script>
 <script>
+
 	level_input = document.getElementById("level");
 
 	canvas = document.getElementById("game-canvas")
@@ -36,8 +40,63 @@
 
 	game = new Pathogen(canvas);
 	game.render();
+	player = {auth_key: -1, id:-1, index:0};
 
-	player = 1;
+	
+	function packPostMsg(data){
+		let post = {};
+		post.method = "POST";
+		post.headers = {"Content-Type" : "application/json"};
+		post.body = JSON.stringify(data);
+		return post;
+	}// getPostData
+
+	function update(){
+		let tx = {auth_key: player.auth_key, turn_index: player.index};
+		let data = packPostMsg(tx);
+
+		fetch ("/update", data)
+		.then ( function (response){
+			return response.json();
+		}).then ( function (body){
+			let turns = body.turns;
+			for (let i=0; i<turns.length; i++){
+				console.log("Processing turn: "+turns[i]);
+				game.click(turns[i].col, turns[i].row, turns[i].player, turns[i].type)
+				player.index += 1;
+				while (game.waves_c > 0);
+			}
+			setTimeout(update, 1000);
+		});
+	}// update
+
+	function connect(){
+		let data = packPostMsg({});
+		fetch ("/new-user", data)
+		.then( function (response){
+			return response.json();
+		})
+		.then( function (body){
+			player.auth_key = body.auth_key;
+			player.id = body.player_id;
+			console.log("Connected: "+player.id+":"+player.auth_key);
+			setTimeout( update, 1000);
+		});
+	}// connect
+
+	function sendClick(col, row, type){
+		let click = {auth_key: player.auth_key, col: col, row: row, type: type};
+		let data = packPostMsg(click);
+
+		console.log("Sending Click: "+click);
+
+		fetch ("/click", data)
+		.then( function (response){
+			let success = response.json().success;
+		});
+	}// sendClick
+
+
 	canvas.addEventListener("click", function(event){
 		let mx = event.pageX;
 		let my = event.pageY;
@@ -45,14 +104,14 @@
 		my -= game.board.y;
 		mx = Math.floor(mx/game.board.unit);
 		my = Math.floor(my/game.board.unit);
-		console.log(event.buttons);
 
-		let level = parseInt(level_input.value);
+		//let level = parseInt(level_input.value);
+		let level = 1;
 
-		let validMove = game.click(mx, my, player, level);
-		if (validMove)
-			player = 1-player;
+		sendClick(mx, my, level);
 	});
+
+	connect();
 </script>
 
 

@@ -10,7 +10,7 @@ function new_tile (){
 		type:   0,
 		modified: 0
 	};
-}//new_tile
+} //new_tile
 
 function get_color(owner){
 	let color;
@@ -62,14 +62,31 @@ function draw_tile(ctx, x, y, r, owner, level){
 	}
 }//draw_tile
 
+function get_cell_timers(){
+	let timers = {};
+	timers.B = 4;
+	timers.C = 8;
+	return timers;
+}// get_cell_timers
+
+function update_cell_timer(timer){
+	if (timer.B < 8)
+		timer.B += 1;
+	if (timer.C < 16)
+		timer.C += 1;
+}// update_cell_timers
+
+
 class Pathogen {
 
 	constructor (canvas){
-		this.width = canvas.width;
-		this.height = canvas.height;
-
-		this.canvas = canvas;
-		this.screen = canvas.getContext("2d");
+		if (canvas){
+			this.width = canvas.width;
+			this.height = canvas.height;
+	
+			this.canvas = canvas;
+			this.screen = canvas.getContext("2d");
+		}
 
 		let u=30, w=30, h=20;
 		this.board = {
@@ -88,15 +105,17 @@ class Pathogen {
 				col[col.length] = new_tile();
 			this.tiles[this.tiles.length] = col;
 		}
-		console.log(this.tiles);
 
 		//Store instances of waves, to iterate over 1 at a time
 		this.waves = [];
 		this.waves_buf = [];
 
-		this.turn = 1; //0 == Player 1
+		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
 		this.p2color = "#0000ff";
+
+		this.p1timer = get_cell_timers();
+		this.p2timer = get_cell_timers();
 	}//constructor
 
 	resetModifiers(){
@@ -182,8 +201,11 @@ class Pathogen {
 	//TODO C-cell -> WALL does not emit C-level wave
 
 	isValidClick (col, row, new_owner, type){
+		if (new_owner !== this.turn) return false;
+
 		let old_owner = this.tiles[col][row].owner;
 		let old_type  = this.tiles[col][row].type;
+
 
 		console.log("Checking click: "+[old_owner,old_type]+" --> "+[new_owner,type]);
 		//If empty cell
@@ -212,7 +234,45 @@ class Pathogen {
 			}
 		}
 
+
 	}//isValidClick
+	
+	processCellSelection (new_owner, type){
+		//If no more uses of that cell-type are available
+		let timer = (new_owner == 0 ? this.p1timer : this.p2timer);
+		let success = false;
+		switch (type){
+		case 1:
+			success = true;
+			break;
+		case 2: //B-Cell
+			if (timer.B < 4){
+				this.clickError = "Player "+new_owner+" has no available B-cells";
+				success = false;
+			} else {
+				timer.B -= 4;
+				success = true;
+			}
+			break;
+		case 3: //C-Cell
+			if (timer.C < 8){
+				this.clickError = "Player "+new_owner+" has no available C-cells";
+				success = false;
+			} else {
+				timer.C -= 8;
+				success = true;
+			}
+			break;
+		default:
+			this.clickError = "Unknown cell type: "+type;
+			success = false;
+			break;
+		}
+		console.log(timer);
+		if (success)
+			update_cell_timer(timer);
+		return success;
+	}// ifAvailableUseCell
 
 	click (col, row, new_owner, type) {
 		if (this.waves.length) return;
@@ -226,9 +286,17 @@ class Pathogen {
 
 		//Check that the requested click is valid
 		if (!this.isValidClick(col, row, new_owner, type)) {
-			alert(this.clickError);
+			console.log(this.clickError);
 			return false;
 		}
+
+		//Check that the user can use the B-Cell, C-Cell, etc.
+		//	AND reduce the appropriate timer
+		if (!this.processCellSelection(new_owner, type)) {
+			console.log(this.clickError);
+			return false;
+		} else
+			console.log("User can use cell type");
 
 		//Click must be valid, upgrade the target cell
 		console.log("Upgrading cell!");
@@ -259,11 +327,11 @@ class Pathogen {
 			setTimeout(obj.processWaves, 1000, obj);
 		else
 			obj.turn = 1 - obj.turn;
-		
 	}//click
 
 
 	render () {
+		if (!this.canvas) return;
 		this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
 		this.renderBorder();
 		this.screen.strokeStyle = "#000000";
@@ -314,3 +382,5 @@ class Pathogen {
 	}//renderBorder
 
 }//Pathogen
+
+module.exports = Pathogen;
