@@ -4,14 +4,34 @@
 
 <html style="margin-left:0px; margin-top:0px; padding:0px;">
 <style>
-.pathogen-window {
-	border: 0px solid #FF0000;
-	background: #22222233;
-
-	position: absolute;
-	left: 0;
-	top: 0;
-}
+	.pathogen-window {
+		border: 0px solid #FF0000;
+		background: #22222233;
+	
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	.cell-controls {
+		position: absolute;
+		top: 200;
+		border: 1px solid #222222;
+		padding: 10px;
+	}
+	.cell-controls > label {
+		display: block;
+		margin: 20px;
+	}
+	.cell-controls > label > input {
+		width: 30px;
+		height: 30px;
+	}
+	#p1-controls {
+		left:50;
+	}
+	#p2-controls {
+		left: 1300;
+	}
 </style>
 <head>
 	<title>Pathogen</title>
@@ -19,12 +39,18 @@
 
 <body>
 	<canvas id="game-canvas" class="pathogen-window"></canvas>
-	<!--
-	<input id="level" style="position: absolute; top: 20; left:20;" value="1"></input>
-	--!>
-</table>
 
-<div>
+	<div id="p1-controls" class="cell-controls">
+		<label><input type="radio">A</label>
+		<label><input type="radio">B</label>
+		<label><input type="radio">C</label>
+	</div>
+
+	<div id="p2-controls" class="cell-controls">
+		<label><input type="radio">A</label>
+		<label><input type="radio">B</label>
+		<label><input type="radio">C</label>
+	</div>
 
 
 

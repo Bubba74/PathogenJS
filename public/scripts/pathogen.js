@@ -109,6 +109,7 @@ class Pathogen {
 		//Store instances of waves, to iterate over 1 at a time
 		this.waves = [];
 		this.waves_buf = [];
+		this.busy = false;
 
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
@@ -202,6 +203,7 @@ class Pathogen {
 
 	isValidClick (col, row, new_owner, type){
 		if (new_owner !== this.turn) return false;
+		if (col < 0 || col >= this.tiles.length || row < 0 || row >= this.tiles[0].length) return false;
 
 		let old_owner = this.tiles[col][row].owner;
 		let old_type  = this.tiles[col][row].type;
@@ -275,7 +277,8 @@ class Pathogen {
 	}// ifAvailableUseCell
 
 	click (col, row, new_owner, type) {
-		if (this.waves.length) return;
+		if (this.busy) return false;
+		this.busy = true;
 
 		if (type < 1) type = 1;
 		if (type > 3) type = 3;
@@ -287,6 +290,7 @@ class Pathogen {
 		//Check that the requested click is valid
 		if (!this.isValidClick(col, row, new_owner, type)) {
 			console.log(this.clickError);
+			this.busy = false;
 			return false;
 		}
 
@@ -294,9 +298,9 @@ class Pathogen {
 		//	AND reduce the appropriate timer
 		if (!this.processCellSelection(new_owner, type)) {
 			console.log(this.clickError);
+			this.busy = false;
 			return false;
-		} else
-			console.log("User can use cell type");
+		}
 
 		//Click must be valid, upgrade the target cell
 		console.log("Upgrading cell!");
@@ -325,8 +329,10 @@ class Pathogen {
 	
 		if (obj.waves.length)
 			setTimeout(obj.processWaves, 1000, obj);
-		else
+		else {
 			obj.turn = 1 - obj.turn;
+			obj.busy = false;
+		}
 	}//click
 
 

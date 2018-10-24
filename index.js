@@ -15,7 +15,7 @@ class Game {
 	}// constructor
 
 	click(auth_key, col, row, type){
-		if (this.p1 === '0' || this.p2 === '0') return;
+		if (this.p1 === '0' || this.p2 === '0') return false;
 
 		let player = -1;
 		if (auth_key === this.p1)
@@ -23,7 +23,7 @@ class Game {
 		else if (auth_key === this.p2)
 			player = 1;
 		else
-			return;
+			return false;
 
 		//Process move (if valid) and return success
 		let success = this.game.click(col, row, player, type);
