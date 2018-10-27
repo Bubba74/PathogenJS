@@ -147,7 +147,7 @@ class Pathogen {
 		this.waves = [];
 		this.waves_buf = [];
 		this.busy = false;
-		this.animation_delay = 300;
+		this.animation_delay = 0;
 
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
