@@ -105,9 +105,9 @@
 			let turns = body.turns;
 			for (let i=0; i<turns.length; i++){
 				console.log("Processing turn: "+turns[i]);
+				while (game.busy);
 				game.click(turns[i].col, turns[i].row, turns[i].player, turns[i].type)
 				player.index += 1;
-				while (game.waves_c > 0);
 			}
 			setTimeout(update, 1000);
 		});

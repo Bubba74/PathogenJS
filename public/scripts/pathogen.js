@@ -177,20 +177,19 @@ class Pathogen {
 		//B-cells upgrade to C-cells (and continue B-wave)
 		//empty/A- cells upgrade to B-cells (and pass on A-wave)
 		//		TODO -- there might be ambiguity if two waves approach at different times
+		let spreadWave = true;
 		let newWaveLevel;
 		//Special case for C-level wave
 		if (waveLevel >= 4){
 			//Store the first tile's type in the waveLevel variable
 			if (override) {
 				newWaveLevel = 10 + tile.type;
-				tile.owner = -1;
-				tile.type = 0;
 			} else newWaveLevel = waveLevel;
 			//If the types match, delete the tile and output a pulse of the same level
-			if (tile.type == waveLevel%10){
+			if (tile.type == newWaveLevel%10){
 				tile.owner = -1;
 				tile.type = 0;
-			}
+			} else spreadWave = false;
 		} else if (waveLevel == 3){
 			//Upgrade connected C-cells to walls
 			if (tile.type == waveLevel){
@@ -221,9 +220,11 @@ class Pathogen {
 			tile.owner = owner;
 			tile.modified = 1;
 		}
+
 		if (override)
 			this.render();
-		this.upgradeAdjacent(col, row, owner, newWaveLevel);
+		if (spreadWave)
+			this.upgradeAdjacent(col, row, owner, newWaveLevel);
 	}//upgradeCell
 
 	upgradeAdjacent(col, row, owner, waveLevel){

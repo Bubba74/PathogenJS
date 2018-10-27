@@ -120,6 +120,9 @@ app.post('/update', function(req, resp){
 	let obj = {turns: turns};
 	resp.send(JSON.stringify(obj));
 	resp.end();
+
+	const used = process.memoryUsage().heapUsed / 1024 / 1024;
+	console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
 });// update
 
 let port = 80;
