@@ -1,2 +1,2 @@
 cd ..
-/home/ec2-user/node-v8.12.0/node index.js
+/home/ec2-user/node-v8.12.0/node index.js 8080

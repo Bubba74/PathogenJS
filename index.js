@@ -122,5 +122,14 @@ app.post('/update', function(req, resp){
 	resp.end();
 });// update
 
+let port = 80;
 
-app.listen(80);
+let argv = process.argv;
+if (argv.length > 2)
+	try {
+		port = parseInt(argv[2]);
+	} catch (err){
+		console.log(err);
+	}
+
+app.listen(port);

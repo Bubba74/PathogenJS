@@ -19,7 +19,7 @@ function get_color(owner){
 		color = "#BBBBBB";
 		break;
 	case 0:
-		color = "#81295a";
+		color = "#CC2277";
 		break;
 	case 1:
 		color = "#4bb294";
@@ -62,11 +62,29 @@ function draw_tile(ctx, x, y, r, owner, level){
 	}
 }//draw_tile
 
-function get_cell_timers(){
-	let timers = {};
-	timers.B = 4;
-	timers.C = 8;
-	return timers;
+function draw_tile_image(ctx, left, top, w, owner, level){
+	//Draw background TODO: get rid of this
+	ctx.fillStyle = "#BBBBBB";
+	ctx.fillRect(left+2, top+2, w-4, w-4);
+
+	if (owner == -1) return;
+
+	let type = ['A', 'B', 'C', 'W'];
+	let img_name = "cell_" + owner + type[level-1];
+	let img = document.getElementById(img_name);
+	console.log("Img src: "+img_name);
+
+	ctx.imageSmoothingEnabled = false;
+	ctx.drawImage(img, left, top, w, w);
+}
+	
+
+function get_cell_timer(){
+	let timer = {};
+	timer.B = 4;
+	timer.C = 8;
+	timer.V = 10;
+	return timer;
 }// get_cell_timers
 
 function update_cell_timer(timer){
@@ -86,6 +104,13 @@ class Pathogen {
 	
 			this.canvas = canvas;
 			this.screen = canvas.getContext("2d");
+
+			this.p1panel = document.getElementById("p1-controls");
+			this.p2panel = document.getElementById("p2-controls");
+			console.log("p1panel");
+			console.log(this.p1panel);
+
+			this.useControlPanels = !(this.p1panel == null || this.p2panel == null);
 		}
 
 		let u=30, w=30, h=20;
@@ -96,6 +121,18 @@ class Pathogen {
 			x: (this.width-u*w)/2,
 			y: (this.height-u*h)/2
 		};
+
+		//Position control panels
+		if (this.useControlPanels){
+			let b = this.board;
+			this.p1panel.style.left = "" + ((b.x-this.p1panel.offsetWidth)/2) + "px";
+			this.p1panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p1panel.offsetHeight/2) + "px";
+			//Panel
+			this.p2panel.style.left = "" + (b.x+b.width*b.unit+(b.x-this.p2panel.offsetWidth)/2) + "px";
+			this.p2panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p2panel.offsetHeight/2) + "px";
+			console.log("Panel1: ["+this.p1panel.offsetWidth+","+this.p2panel.offsetHeight);
+			console.log("Panel1: ["+this.p2panel.style.left+","+this.p2panel.style.top+"]");
+		}
 
 		let b = this.board;
 		this.tiles = [];
@@ -110,13 +147,14 @@ class Pathogen {
 		this.waves = [];
 		this.waves_buf = [];
 		this.busy = false;
+		this.animation_delay = 300;
 
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
 		this.p2color = "#0000ff";
 
-		this.p1timer = get_cell_timers();
-		this.p2timer = get_cell_timers();
+		this.p1timer = get_cell_timer();
+		this.p2timer = get_cell_timer();
 	}//constructor
 
 	resetModifiers(){
@@ -141,7 +179,19 @@ class Pathogen {
 		//		TODO -- there might be ambiguity if two waves approach at different times
 		let newWaveLevel;
 		//Special case for C-level wave
-		if (waveLevel == 3){
+		if (waveLevel >= 4){
+			//Store the first tile's type in the waveLevel variable
+			if (override) {
+				newWaveLevel = 10 + tile.type;
+				tile.owner = -1;
+				tile.type = 0;
+			} else newWaveLevel = waveLevel;
+			//If the types match, delete the tile and output a pulse of the same level
+			if (tile.type == waveLevel%10){
+				tile.owner = -1;
+				tile.type = 0;
+			}
+		} else if (waveLevel == 3){
 			//Upgrade connected C-cells to walls
 			if (tile.type == waveLevel){
 				tile.type += 1;
@@ -171,9 +221,9 @@ class Pathogen {
 			tile.owner = owner;
 			tile.modified = 1;
 		}
-		this.upgradeAdjacent(col, row, owner, newWaveLevel);
 		if (override)
 			this.render();
+		this.upgradeAdjacent(col, row, owner, newWaveLevel);
 	}//upgradeCell
 
 	upgradeAdjacent(col, row, owner, waveLevel){
@@ -208,6 +258,11 @@ class Pathogen {
 		let old_owner = this.tiles[col][row].owner;
 		let old_type  = this.tiles[col][row].type;
 
+		//Special return case for Virus placement
+		if (type == 4){
+			if (old_owner != -1 && old_type != 4) //Some sort of non-wall cell occupies this tile
+				return true;
+		}
 
 		console.log("Checking click: "+[old_owner,old_type]+" --> "+[new_owner,type]);
 		//If empty cell
@@ -265,6 +320,15 @@ class Pathogen {
 				success = true;
 			}
 			break;
+		case 4: //Virus
+			if (timer.V < 10){
+				this.clickError = "Player "+new_owner+" has no available Viruses";
+				success = false;
+			} else {
+				timer.V -= 10;
+				success = true;
+			}
+			break;
 		default:
 			this.clickError = "Unknown cell type: "+type;
 			success = false;
@@ -281,7 +345,7 @@ class Pathogen {
 		this.busy = true;
 
 		if (type < 1) type = 1;
-		if (type > 3) type = 3;
+		if (type > 4) type = 4;
 		
 		//Set it so no tiles have been modified
 		this.resetModifiers();
@@ -307,7 +371,7 @@ class Pathogen {
 		this.upgradeCell(col, row, new_owner, type, true);
 
 		console.log("Clicked ["+col+","+row+"] "+new_owner+":"+type);
-		setTimeout(this.processWaves, 1000, this);
+		setTimeout(this.processWaves, this.animation_delay, this);
 		return true;
 	}//click
 
@@ -328,7 +392,7 @@ class Pathogen {
 		obj.render();
 	
 		if (obj.waves.length)
-			setTimeout(obj.processWaves, 1000, obj);
+			setTimeout(obj.processWaves, obj.animation_delay, obj);
 		else {
 			obj.turn = 1 - obj.turn;
 			obj.busy = false;
@@ -365,9 +429,9 @@ class Pathogen {
 			for (let j=0; j<b.height; j++){
 				let t = this.tiles[i][j];
 				//Draw cell color
-				let x = b.x+i*b.unit+b.unit/2,
-				    y = b.y+j*b.unit+b.unit/2;
-				draw_tile(this.screen, x, y, b.unit/2, t.owner, t.type);
+				let left = b.x+i*b.unit,
+				    top  = b.y+j*b.unit;
+				draw_tile_image(this.screen, left, top, b.unit, t.owner, t.type);
 			}
 		
 	}//render
