@@ -16,7 +16,8 @@ function get_color(owner){
 	let color;
 	switch (owner){
 	case -1:
-		color = "#BBBBBB";
+		color = "#9955ed33";
+		color = "#FFFFFF";
 		break;
 	case 0:
 		color = "#CC2277";
@@ -64,7 +65,7 @@ function draw_tile(ctx, x, y, r, owner, level){
 
 function draw_tile_image(ctx, left, top, w, owner, level){
 	//Draw background TODO: get rid of this
-	ctx.fillStyle = "#BBBBBB";
+	ctx.fillStyle = "#9955ed44";
 	ctx.fillRect(left+2, top+2, w-4, w-4);
 
 	if (owner == -1) return;
@@ -72,7 +73,6 @@ function draw_tile_image(ctx, left, top, w, owner, level){
 	let type = ['A', 'B', 'C', 'W'];
 	let img_name = "cell_" + owner + type[level-1];
 	let img = document.getElementById(img_name);
-	console.log("Img src: "+img_name);
 
 	ctx.imageSmoothingEnabled = false;
 	ctx.drawImage(img, left, top, w, w);
@@ -107,8 +107,8 @@ class Pathogen {
 
 			this.p1panel = document.getElementById("p1-controls");
 			this.p2panel = document.getElementById("p2-controls");
-			console.log("p1panel");
-			console.log(this.p1panel);
+			//console.log("p1panel");
+			//console.log(this.p1panel);
 
 			this.useControlPanels = !(this.p1panel == null || this.p2panel == null);
 		}
@@ -130,8 +130,8 @@ class Pathogen {
 			//Panel
 			this.p2panel.style.left = "" + (b.x+b.width*b.unit+(b.x-this.p2panel.offsetWidth)/2) + "px";
 			this.p2panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p2panel.offsetHeight/2) + "px";
-			console.log("Panel1: ["+this.p1panel.offsetWidth+","+this.p2panel.offsetHeight);
-			console.log("Panel1: ["+this.p2panel.style.left+","+this.p2panel.style.top+"]");
+			//console.log("Panel1: ["+this.p1panel.offsetWidth+","+this.p2panel.offsetHeight);
+			//console.log("Panel1: ["+this.p2panel.style.left+","+this.p2panel.style.top+"]");
 		}
 
 		let b = this.board;
@@ -147,7 +147,7 @@ class Pathogen {
 		this.waves = [];
 		this.waves_buf = [];
 		this.busy = false;
-		this.animation_delay = 0;
+		this.animation_delay = 100;
 
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
@@ -168,7 +168,6 @@ class Pathogen {
 	upgradeCell(col, row, owner, waveLevel, override){
 		let tile = this.tiles[col][row];
 
-		if (tile.modified) return;
 
 		//i.e. if it's a B-level upgrade, C-cells ignore the change
 		if (tile.type > waveLevel) return;
@@ -189,6 +188,7 @@ class Pathogen {
 			if (tile.type == newWaveLevel%10){
 				tile.owner = -1;
 				tile.type = 0;
+				tile.modified = 1;
 			} else spreadWave = false;
 		} else if (waveLevel == 3){
 			//Upgrade connected C-cells to walls
@@ -211,6 +211,9 @@ class Pathogen {
 			}
 		} else {
 			if (tile.type == waveLevel){
+				//Don't upgrade cells that have already changed this round
+				if (tile.modified) return;
+				//Otherwise upgrade
 				tile.type += 1;
 				newWaveLevel = waveLevel;
 			} else if (tile.type < waveLevel){
@@ -222,7 +225,7 @@ class Pathogen {
 		}
 
 		if (override)
-			this.render();
+			this.render(false);
 		if (spreadWave)
 			this.upgradeAdjacent(col, row, owner, newWaveLevel);
 	}//upgradeCell
@@ -335,7 +338,6 @@ class Pathogen {
 			success = false;
 			break;
 		}
-		console.log(timer);
 		if (success)
 			update_cell_timer(timer);
 		return success;
@@ -377,20 +379,20 @@ class Pathogen {
 	}//click
 
 	processWaves(obj){
-		console.log("Turn: "+obj.turn);
+		//console.log("Turn: "+obj.turn);
 		
 		//Swap waves and waves_buf arrays
 		let temp = obj.waves;
 		obj.waves = obj.waves_buf;
 		obj.waves_buf = temp;
-		console.log(obj.waves);
+		//console.log(obj.waves);
 		
 		//Process spread for each wave
 		while (obj.waves_buf.length){
 			let wave = obj.waves_buf.pop();
 			obj.upgradeCell(wave.x, wave.y, wave.owner, wave.level, false);
 		}
-		obj.render();
+		obj.render(false);
 	
 		if (obj.waves.length)
 			setTimeout(obj.processWaves, obj.animation_delay, obj);
@@ -401,37 +403,25 @@ class Pathogen {
 	}//click
 
 
-	render () {
+	render (clear=true) {
 		if (!this.canvas) return;
-		this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
+		if (clear)
+			this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
+
 		this.renderBorder();
-		this.screen.strokeStyle = "#000000";
+		
 		let b = this.board;
-		for (let i=0; i<b.width; i++){
-			for (let j=0; j<b.height; j++){
-				//Draw vertical grid line
-				this.screen.moveTo(b.x+i*b.unit, b.y);
-				this.screen.lineTo(b.x+i*b.unit, b.y+b.height*b.unit);
-				//Draw horizontal grid line
-				this.screen.moveTo(b.x, b.y+j*b.unit);
-				this.screen.lineTo(b.x+b.width*b.unit, b.y+j*b.unit);
-			}
-		}
-		//Draw far right / far bottom border lines
-		this.screen.moveTo(b.x+b.width*b.unit, b.y);
-		this.screen.lineTo(b.x+b.width*b.unit, b.y+b.height*b.unit);
-		this.screen.moveTo(b.x	      , b.y+b.height*b.unit);
-		this.screen.lineTo(b.x+b.width*b.unit, b.y+b.height*b.unit);
-		//Process line commands
-		this.screen.stroke();
-				
-			
 		for (let i=0; i<b.width; i++)
 			for (let j=0; j<b.height; j++){
 				let t = this.tiles[i][j];
-				//Draw cell color
+				//After the initial 'clear' stage, skip the tiles that have not changed
+				if (!clear && !t.modified) continue;
+				//Get coordinates
 				let left = b.x+i*b.unit,
 				    top  = b.y+j*b.unit;
+				//Clear possible traces of previous image
+				if (!clear) this.screen.clearRect(left, top, b.unit, b.unit);
+				//Draw the tile's image
 				draw_tile_image(this.screen, left, top, b.unit, t.owner, t.type);
 			}
 		

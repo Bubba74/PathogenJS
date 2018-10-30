@@ -2,11 +2,16 @@
 <!DOCTYPE = html>
 
 
-<html style="margin-left:0px; margin-top:0px; padding:0px;">
+<html>
+<!--<html style="margin-left:0px; margin-top:0px; padding:0px;">--!>
 <style>
+	body {
+		background-image: "img/StaticBG.jpg";
+	}
+
 	.pathogen-window {
 		border: 0px solid #FF0000;
-		background: #22222233;
+		background: #00000000;
 	
 		position: absolute;
 		left: 0;
@@ -16,8 +21,8 @@
 		position: absolute;
 		top: 200;
 		padding: 0px;
-		//width: 120px;
-		//height: 360px;
+		/*width: 120px;*/
+		/*height: 360px;*/
 	}
 	.cell-controls > label {
 		width: 100%;
@@ -39,41 +44,162 @@
 		image-rendering: pixelated;
 	}
 	.cell-controls > label > input:checked + img {
-  		//border:2px solid #f00;
 		background: #AAAAAA;
+	}
+
+	#lobby-window {
+		position: absolute;
+		width:  800px;
+		height: 600px;
+		top: 50%;
+		left: 50%;
+		margin-left: -400px;
+		margin-top:  -300px;
+		background: #8A2BE288;
+		border-radius: 20px;
+		padding: 20px;
+		display: none;
+	}
+
+	.formdiv {
+		background-color: lightgreen;
+		border-radius: 5px;
+		padding: 20px;
+		display: inline-block;
+		width: calc(100% - 40px); 
+	}
+
+	#userdiv {
+		display: block;
+		background-color: lightgreen;
+		border-radius: 10px;
+
+		position: absolute;
+		width: 300px;
+		height: 200px;
+		left: 50%;
+		top: 50%;
+		margin-top: -100px;
+		margin-left: -150px;
+
+		box-sizing: border-box;
+		padding: 20px;
+	}
+	#userdiv > input {
+		font-size: 25px;
+		width: 100%;
+		margin: 10px;
+		margin-left: 0px;
+	}
+	#userdiv > input[type="button"] {
+		background: blueviolet;
+		border-radius: 5px;
+		color: white;
+		border-color: blueviolet;
+	}
+
+	#userlabel {
+		display: none;
+		background-color: #8A2BE288;
+		border-radius: 10px;
+
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		padding: 10px;
+
+		font-size: 25;
+		color: white;
+	}
+
+	::placeholder {
+		color: #CCCCCCBB;
 	}
 
 </style>
 <head>
 	<title>Pathogen</title>
+	<link rel="shortcut icon" href="img/logo.png">
 </head>
 
-<body>
-	<canvas id="game-canvas" class="pathogen-window"></canvas>
+ <body style="background-image: url('img/StaticBG.jpg')">
 
-	<div id="p1-controls" class="cell-controls" style="width:120px; height:480px;">
-		<label> <input type="radio" name="p1-radio" value=1 checked="checked"> <img id="cell_0A" src="/img/cell_0A.png"> </label>
-		<label> <input type="radio" name="p1-radio" value=2> <img id="cell_0B" src="/img/cell_0B.png"> </label>
-		<label> <input type="radio" name="p1-radio" value=3> <img id="cell_0C" src="/img/cell_0C.png"> </label>
-		<label> <input type="radio" name="p1-radio" value=4> <img id="cell_0V" src="/img/cell_0V.png"> </label>
+	<label id="userlabel"></label>
+
+	<div id="userdiv">
+		<input id="username" size="10" placeholder="username">
+		<input type="button" value="Connect" onclick="play('online')">
+		</br>
+		<input type="button" value="Play Offline" onclick="play('offline')">
 	</div>
 
-	<div id="p2-controls" class="cell-controls" style="width:120px; height:480px; left:55">
-		<label> <input type="radio" name="p2-radio" value=1 checked="checked"> <img id="cell_1A" src="/img/cell_1A.png"> </label>
-		<label> <input type="radio" name="p2-radio" value=2> <img id="cell_1B" src="/img/cell_1B.png"> </label>
-		<label> <input type="radio" name="p2-radio" value=3> <img id="cell_1C" src="/img/cell_1C.png"> </label>
-		<label> <input type="radio" name="p2-radio" value=4> <img id="cell_1V" src="/img/cell_1V.png"> </label>
-	</div>
+	<div id="lobby-window">
+		 <form class="formdiv">
+			<!--<label for="opponent_name">Invite Player: </label>--!>
+			Invite Player: 
+			<input type="text" name="opp1">
+			Board Size: 
+			<input type="text" name="width" maxlength="2" size="2" value=22>
+			x
+			<input type="text" name="height" maxlength="2" size="2" value=18>
+			<input type="submit" value="Send Invite">
+		</form>
+		<div style="background:#FFFFFF44;"></div>
 
-	<!-- So the cell_0W.png and cell_1W.png files can be accessed by javascript !-->
-	<img id="cell_0W" src="/img/cell_0W.png" style="display:none;">
-	<img id="cell_1W" src="/img/cell_1W.png" style="display:none;">
+	</div> <!-- Lobby Screen --!>
+
+	<div id="game-window" style="display: none">
+		<canvas id="game-canvas" class="pathogen-window"></canvas>
+	
+		<div id="p1-controls" class="cell-controls" style="width:120px; height:480px;">
+			<label> <input type="radio" name="p1-radio" value=1 checked="checked"> <img id="cell_0A" src="/img/cell_0A.png"> </label>
+			<label> <input type="radio" name="p1-radio" value=2> <img id="cell_0B" src="/img/cell_0B.png"> </label>
+			<label> <input type="radio" name="p1-radio" value=3> <img id="cell_0C" src="/img/cell_0C.png"> </label>
+			<label> <input type="radio" name="p1-radio" value=4> <img id="cell_0V" src="/img/cell_0V.png"> </label>
+		</div>
+	
+		<div id="p2-controls" class="cell-controls" style="width:120px; height:480px; left:55">
+			<label> <input type="radio" name="p2-radio" value=1 checked="checked"> <img id="cell_1A" src="/img/cell_1A.png"> </label>
+			<label> <input type="radio" name="p2-radio" value=2> <img id="cell_1B" src="/img/cell_1B.png"> </label>
+			<label> <input type="radio" name="p2-radio" value=3> <img id="cell_1C" src="/img/cell_1C.png"> </label>
+			<label> <input type="radio" name="p2-radio" value=4> <img id="cell_1V" src="/img/cell_1V.png"> </label>
+		</div>
+	
+		<!-- So the cell_0W.png and cell_1W.png files can be accessed by javascript !-->
+		<img id="cell_0W" src="/img/cell_0W.png" style="display:none;">
+		<img id="cell_1W" src="/img/cell_1W.png" style="display:none;">
+	</div>
 
 
 
 
 <script src="scripts/pathogen.js"></script>
 <script>
+	client = {};
+
+	function newUsername(){
+		let len = 5;
+		let chars = "0123456789";
+		let name = "User";
+		for (let i=0; i<len; i++)
+			name += chars[Math.floor(len*Math.random())];
+		return name;
+	}
+
+	winLobby = document.getElementById("lobby-window");
+	winGame = document.getElementById("game-window");
+
+
+	userlabel = document.getElementById("userlabel");
+	userdiv = document.getElementById("userdiv");
+	username = document.getElementById("username");
+	username.value = newUsername();
+	username.addEventListener("keydown", function(event){
+		if (event.keyCode == 13){
+			play('online');
+			console.log("Joining game");
+		}
+	});
 
 	level_input = document.getElementById("level");
 
@@ -81,10 +207,12 @@
 	canvas.width = document.body.clientWidth;
 	canvas.height = document.body.clientHeight;
 
-	game = new Pathogen(canvas);
-	game.render();
 	player = {auth_key: -1, id:-1, index:0};
 
+	function newGame(){
+		client.game = new Pathogen(canvas);
+		client.game.render();
+	}
 	
 	function packPostMsg(data){
 		let post = {};
@@ -139,28 +267,59 @@
 		});
 	}// sendClick
 
-
 	canvas.addEventListener("click", function(event){
 		let mx = event.pageX;
 		let my = event.pageY;
-		mx -= game.board.x;
-		my -= game.board.y;
-		mx = Math.floor(mx/game.board.unit);
-		my = Math.floor(my/game.board.unit);
+		mx -= client.game.board.x;
+		my -= client.game.board.y;
+		mx = Math.floor(mx/client.game.board.unit);
+		my = Math.floor(my/client.game.board.unit);
 
 
-		let control_box = "p1-radio";
+		let player = client.game.turn+1;
+		if (player.id == 0)
+			player = 1;
 		if (player.id == 1)
-			control_box = "p2-radio";
+			player = 2;
+		let control_box = "p"+player+"-radio";
 
 		let level = parseInt(document.querySelector('input[name='+control_box+']:checked').value)
 
-		sendClick(mx, my, level);
+		if (client.connection == "online")
+			sendClick(mx, my, level);
+		else
+			client.game.click(mx, my, player-1, level);
+			
 	});
 
-	connect();
+	function play (connectMode){
+		let name = username.value;
+		if (name === "") {
+			username.value = newUsername();
+			return;
+		}
 
-	console.log(document.getElementById("p1-controls").style);
+		if (connectMode == 'online'){
+			userlabel.innerHTML = "Username: " + name;
+			userlabel.style.display = "inline-block";
+			client.name = name;
+			userdiv.style.display = "none";
+			winLobby.style.display = "inline-block";
+			client.connection = "online";
+			newGame();
+			connect();
+		} else {
+			userlabel.innerHTML = "Local Game";
+			userlabel.style.display = "inline-block";
+			userdiv.style.display = "none";
+			winGame.style.display = "inline-block";
+			player.id = -1;
+			client.name = "";
+			client.connection = "offline";
+			newGame();
+		}
+	}
+
 </script>
 
 
