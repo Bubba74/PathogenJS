@@ -1,0 +1,111 @@
+
+body {
+	background-image: "img/StaticBG.jpg";
+}
+
+.pathogen-window {
+	border: 0px solid #FF0000;
+	background: #00000000;
+
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.cell-controls {
+	position: absolute;
+	top: 200;
+	padding: 0px;
+}
+.cell-controls > div {
+	width: 100%;
+	height: 25%;
+	display: block;
+}
+.cell-controls > div > label > input {
+	visibility: hidden; /* Makes input not-clickable */
+  	position: absolute; /* Remove input from document flow */
+}
+.cell-controls > div > label > input + img {
+  	cursor: pointer;
+	height: 100%;
+	image-rendering: pixelated;
+}
+.cell-controls > div > label > input:checked + img {
+	background: #8A2BE288;
+	border-radius: 10px;
+}
+.cell-controls > div > img {
+	width: 10px;
+	height: 100%;
+	float: right;
+	display: inline;
+	background: white;
+}
+#p2-controls > div > img {
+	float: left;
+}
+
+#lobby-window {
+	position: absolute;
+	width:  800px;
+	height: 600px;
+	top: 50%;
+	left: 50%;
+	margin-left: -400px;
+	margin-top:  -300px;
+	background: #8A2BE288;
+	border-radius: 20px;
+	padding: 20px;
+	display: none;
+}
+
+.formdiv {
+	background-color: lightgreen;
+	border-radius: 5px;
+	padding: 20px;
+	display: inline-block;
+	width: calc(100% - 40px); 
+}
+
+#userdiv {
+	display: block;
+	background-color: lightgreen;
+	border-radius: 10px;
+
+	position: absolute;
+	width: 300px;
+	height: 200px;
+	left: 50%;
+	top: 50%;
+	margin-top: -100px;
+	margin-left: -150px;
+
+	box-sizing: border-box;
+	padding: 20px;
+}
+#userdiv > input {
+	font-size: 25px;
+	width: 100%;
+	margin: 10px;
+	margin-left: 0px;
+}
+#userdiv > input[type="button"] {
+	background: blueviolet;
+	border-radius: 5px;
+	color: white;
+	border-color: blueviolet;
+}
+
+#userlabel {
+	display: none;
+	background-color: #8A2BE288;
+	border-radius: 10px;
+
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	padding: 10px;
+
+	font-size: 25;
+	color: white;
+}

@@ -433,7 +433,8 @@ class Pathogen {
 	}//render
 
 	renderBorder (){
-		this.screen.fillStyle = get_color(1-this.turn);
+		let colors = ["#953355", "#51739e"];
+		this.screen.fillStyle = colors[1-this.turn];
 		let b = this.board;
 		let ctx = this.screen;
 

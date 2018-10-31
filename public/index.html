@@ -3,124 +3,11 @@
 
 
 <html>
-<!--<html style="margin-left:0px; margin-top:0px; padding:0px;">--!>
-<style>
-	body {
-		background-image: "img/StaticBG.jpg";
-	}
 
-	.pathogen-window {
-		border: 0px solid #FF0000;
-		background: #00000000;
-	
-		position: absolute;
-		left: 0;
-		top: 0;
-	}
-	.cell-controls {
-		position: absolute;
-		top: 200;
-		padding: 0px;
-		/*width: 120px;*/
-		/*height: 360px;*/
-	}
-	.cell-controls > label {
-		width: 100%;
-		height: 25%;
-		display: block;
-		margin: 10px;
-	}
-	.cell-controls > label > input {
-		width: 100%;
-		height: 100%;
-		visibility: hidden; /* Makes input not-clickable */
-  		position: absolute; /* Remove input from document flow */
-	}
-	.cell-controls > label > input + img {
-  		cursor:pointer;
-		width: 100%;
-		height: 100%;
-  		border:2px solid transparent;
-		image-rendering: pixelated;
-	}
-	.cell-controls > label > input:checked + img {
-		background: #8A2BE288;
-		border-radius: 10px;
-	}
-
-	#lobby-window {
-		position: absolute;
-		width:  800px;
-		height: 600px;
-		top: 50%;
-		left: 50%;
-		margin-left: -400px;
-		margin-top:  -300px;
-		background: #8A2BE288;
-		border-radius: 20px;
-		padding: 20px;
-		display: none;
-	}
-
-	.formdiv {
-		background-color: lightgreen;
-		border-radius: 5px;
-		padding: 20px;
-		display: inline-block;
-		width: calc(100% - 40px); 
-	}
-
-	#userdiv {
-		display: block;
-		background-color: lightgreen;
-		border-radius: 10px;
-
-		position: absolute;
-		width: 300px;
-		height: 200px;
-		left: 50%;
-		top: 50%;
-		margin-top: -100px;
-		margin-left: -150px;
-
-		box-sizing: border-box;
-		padding: 20px;
-	}
-	#userdiv > input {
-		font-size: 25px;
-		width: 100%;
-		margin: 10px;
-		margin-left: 0px;
-	}
-	#userdiv > input[type="button"] {
-		background: blueviolet;
-		border-radius: 5px;
-		color: white;
-		border-color: blueviolet;
-	}
-
-	#userlabel {
-		display: none;
-		background-color: #8A2BE288;
-		border-radius: 10px;
-
-		position: absolute;
-		top: 10px;
-		left: 10px;
-		padding: 10px;
-
-		font-size: 25;
-		color: white;
-	}
-
-	::placeholder {
-		color: #CCCCCCBB;
-	}
-
-</style>
 <head>
 	<title>Pathogen</title>
 	<link rel="shortcut icon" href="img/logo.png">
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
  <body style="background-image: url('img/StaticBG.jpg')">
@@ -152,18 +39,18 @@
 	<div id="game-window" style="display: none">
 		<canvas id="game-canvas" class="pathogen-window"></canvas>
 	
-		<div id="p1-controls" class="cell-controls" style="width:120px; height:480px;">
-			<label> <input type="radio" name="p1-radio" value=1 checked="checked"> <img id="cell_0A" src="/img/cell_0A.png"> </label>
-			<label> <input type="radio" name="p1-radio" value=2> <img id="cell_0B" src="/img/cell_0B.png"> </label>
-			<label> <input type="radio" name="p1-radio" value=3> <img id="cell_0C" src="/img/cell_0C.png"> </label>
-			<label> <input type="radio" name="p1-radio" value=4> <img id="cell_0V" src="/img/cell_0V.png"> </label>
+		<div id="p1-controls" class="cell-controls" style="width:145px; height:480px;">
+			<div> <label> <input type="radio" name="p1-radio" value=1 checked> <img id="cell_0A" src="/img/cell_0A.png"> </label> <img><img> </div>
+			<div> <label> <input type="radio" name="p1-radio" value=2> <img id="cell_0B" src="/img/cell_0B.png"> </label> <img id="p1b1"> <img id="p1b2"> </div>
+			<div> <label> <input type="radio" name="p1-radio" value=3> <img id="cell_0C" src="/img/cell_0C.png"> </label> <img id="p1c1"> <img id="p1c2"> </div>
+			<div> <label> <input type="radio" name="p1-radio" value=4> <img id="cell_0V" src="/img/cell_0V.png"> </label> <img id="p1v1"> <img id="p1v2"> </div>
 		</div>
 	
-		<div id="p2-controls" class="cell-controls" style="width:120px; height:480px; left:55">
-			<label> <input type="radio" name="p2-radio" value=1 checked="checked"> <img id="cell_1A" src="/img/cell_1A.png"> </label>
-			<label> <input type="radio" name="p2-radio" value=2> <img id="cell_1B" src="/img/cell_1B.png"> </label>
-			<label> <input type="radio" name="p2-radio" value=3> <img id="cell_1C" src="/img/cell_1C.png"> </label>
-			<label> <input type="radio" name="p2-radio" value=4> <img id="cell_1V" src="/img/cell_1V.png"> </label>
+		<div id="p2-controls" class="cell-controls" style="width:145px; height:480px;">
+			<div> <label> <input type="radio" name="p2-radio" value=1 checked> <img id="cell_1A" src="/img/cell_1A.png"> </label> <img><img> </div>
+			<div> <label> <input type="radio" name="p2-radio" value=2> <img id="cell_1B" src="/img/cell_1B.png"> </label> <img id="p2b1"> <img id="p2b2"> </div>
+			<div> <label> <input type="radio" name="p2-radio" value=3> <img id="cell_1C" src="/img/cell_1C.png"> </label> <img id="p2c1"> <img id="p2c2"> </div>
+			<div> <label> <input type="radio" name="p2-radio" value=4> <img id="cell_1V" src="/img/cell_1V.png"> </label> <img id="p2v1"> <img id="p2v2"> </div>
 		</div>
 	
 		<!-- So the cell_0W.png and cell_1W.png files can be accessed by javascript !-->
