@@ -12,21 +12,25 @@ function new_tile (){
 	};
 } //new_tile
 
-function get_color(owner){
-	let color;
-	switch (owner){
-	case -1:
-		color = "#9955ed33";
-		color = "#FFFFFF";
-		break;
-	case 0:
-		color = "#CC2277";
-		break;
-	case 1:
-		color = "#4bb294";
-		break;
-	}
-	return color;
+let colors = [
+	//Old colors: Red(#CC2277) Blue(#4bb294)
+	["e5486a00", "e5484844", "e5cb4866"],
+	["4bb29466", "FFFFFF66", "FFFFFF66"]
+];
+let colors_a = "66";
+
+function get_color(owner, type=1){
+	if (owner < -1)
+		return "#9955ed33";
+	if (owner > 1)
+		return "#FFFFFFFF";
+
+	if (type < 1)
+		return "#9955ed33";
+	if (type > 3)
+		return "#00000000";
+
+	return "#" + colors[owner][type-1];
 }
 
 
@@ -66,6 +70,7 @@ function draw_tile(ctx, x, y, r, owner, level){
 function draw_tile_image(ctx, left, top, w, owner, level){
 	//Draw background TODO: get rid of this
 	ctx.fillStyle = "#9955ed44";
+	ctx.fillStyle = get_color(owner, level);
 	ctx.fillRect(left+2, top+2, w-4, w-4);
 
 	if (owner == -1) return;
@@ -74,7 +79,7 @@ function draw_tile_image(ctx, left, top, w, owner, level){
 	let img_name = "cell_" + owner + type[level-1];
 	let img = document.getElementById(img_name);
 
-	ctx.imageSmoothingEnabled = false;
+	ctx.imageSmoothingEnabled = true;
 	ctx.drawImage(img, left, top, w, w);
 }
 	
