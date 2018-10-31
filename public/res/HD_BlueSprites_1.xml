@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:5a6a689a2a684cc9f5520b92802089e7:b9ecf98da1075520243ec8ab42738667:89b961cc3ffceb9c6297c3aed8994950$ -->
+<TextureAtlas imagePath="HD_BlueSprites_1.png">
+    <SubTexture name="Blue_Destruction_Stage1_009" x="396" y="1690" width="96" height="88" frameX="-77" frameY="-76" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Destruction_Stage2_009" x="396" y="1690" width="96" height="88" frameX="-77" frameY="-76" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Destruction_Stage3_009" x="396" y="1690" width="96" height="88" frameX="-77" frameY="-76" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Division1_Stage1_011" x="498" y="1676" width="190" height="102" frameX="-100" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage1_012" x="1854" y="1788" width="190" height="100" frameX="-101" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage1_013" x="2" y="1626" width="194" height="100" frameX="-101" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage1_014" x="254" y="1486" width="196" height="100" frameX="-100" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage2_003" x="1908" y="1580" width="132" height="102" frameX="-101" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage2_007" x="1310" y="1932" width="158" height="102" frameX="-101" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage2_011" x="1854" y="1684" width="190" height="102" frameX="-100" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage2_012" x="1470" y="1772" width="190" height="100" frameX="-101" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage2_013" x="2" y="1728" width="194" height="100" frameX="-101" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division1_Stage2_014" x="2" y="1524" width="196" height="100" frameX="-100" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_004" x="1662" y="1810" width="190" height="98" frameX="-54" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_005" x="1470" y="1874" width="190" height="98" frameX="-54" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_006" x="506" y="1378" width="218" height="98" frameX="-40" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_007" x="1286" y="1320" width="218" height="98" frameX="-40" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_008" x="2" y="1424" width="250" height="98" frameX="-24" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_009" x="1722" y="762" width="250" height="98" frameX="-24" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_010" x="1148" y="592" width="274" height="98" frameX="-12" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_011" x="1448" y="488" width="276" height="98" frameX="-12" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_012" x="292" y="496" width="282" height="96" frameX="-9" frameY="-102" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_013" x="884" y="202" width="284" height="96" frameX="-9" frameY="-102" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage1_014" x="2" y="394" width="290" height="96" frameX="-5" frameY="-102" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_002" x="1158" y="1770" width="150" height="98" frameX="-74" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_004" x="1356" y="1420" width="192" height="98" frameX="-53" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_005" x="1356" y="1520" width="192" height="98" frameX="-53" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_006" x="1402" y="780" width="220" height="98" frameX="-39" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_007" x="1722" y="862" width="220" height="98" frameX="-39" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_008" x="838" y="772" width="252" height="98" frameX="-23" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_009" x="838" y="872" width="252" height="98" frameX="-23" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_010" x="1168" y="492" width="276" height="98" frameX="-11" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_011" x="1168" y="392" width="278" height="98" frameX="-11" frameY="-101" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_012" x="1170" y="294" width="284" height="96" frameX="-8" frameY="-102" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_013" x="2" y="492" width="288" height="96" frameX="-6" frameY="-102" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Across_Stage2_014" x="2" y="2" width="294" height="96" frameX="-3" frameY="-102" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage1_003" x="1584" y="1180" width="134" height="134" frameX="-100" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage1_006" x="1310" y="1770" width="158" height="160" frameX="-101" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage1_011" x="582" y="1780" width="190" height="190" frameX="-101" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage1_012" x="2" y="1830" width="192" height="192" frameX="-100" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage1_013" x="506" y="1478" width="196" height="196" frameX="-100" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage1_014" x="1006" y="1330" width="196" height="198" frameX="-101" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage2_003" x="1584" y="1316" width="132" height="134" frameX="-100" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage2_010" x="1088" y="1580" width="188" height="188" frameX="-99" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage2_011" x="390" y="1786" width="190" height="192" frameX="-99" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage2_012" x="196" y="1830" width="192" height="192" frameX="-100" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage2_013" x="200" y="1588" width="194" height="196" frameX="-100" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division2_Stage2_014" x="726" y="1388" width="196" height="198" frameX="-99" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_003" x="1662" y="1910" width="164" height="136" frameX="-70" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_004" x="1716" y="1510" width="190" height="148" frameX="-56" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_005" x="1278" y="1620" width="190" height="148" frameX="-56" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_006" x="1720" y="1182" width="218" height="162" frameX="-41" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_007" x="1718" y="1346" width="218" height="162" frameX="-42" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_008" x="2" y="1246" width="250" height="176" frameX="-26" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_009" x="2" y="1066" width="250" height="178" frameX="-26" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_010" x="1726" y="570" width="274" height="190" frameX="-14" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_011" x="2" y="872" width="278" height="192" frameX="-13" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_012" x="884" y="300" width="282" height="194" frameX="-10" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_013" x="592" y="202" width="290" height="198" frameX="-6" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage1_014" x="592" y="2" width="292" height="198" frameX="-5" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_002" x="1204" y="1452" width="150" height="126" frameX="-75" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_003" x="1828" y="1910" width="164" height="136" frameX="-70" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_004" x="1470" y="1622" width="190" height="148" frameX="-56" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_005" x="1662" y="1660" width="190" height="148" frameX="-56" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_006" x="1066" y="1166" width="218" height="162" frameX="-41" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_007" x="786" y="1224" width="218" height="162" frameX="-42" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_008" x="254" y="1308" width="250" height="176" frameX="-26" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_009" x="254" y="1128" width="250" height="178" frameX="-26" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_010" x="1446" y="588" width="274" height="190" frameX="-14" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_011" x="1456" y="294" width="278" height="192" frameX="-13" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_012" x="588" y="402" width="282" height="194" frameX="-10" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_013" x="296" y="296" width="290" height="198" frameX="-6" frameY="-98" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division3_Stage2_014" x="886" y="2" width="292" height="198" frameX="-5" frameY="-99" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_000" x="1622" y="976" width="98" height="100" frameX="-101" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_004" x="704" y="1588" width="190" height="190" frameX="-55" frameY="-56" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_005" x="774" y="1780" width="190" height="190" frameX="-55" frameY="-56" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_006" x="1722" y="962" width="218" height="218" frameX="-41" frameY="-42" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_007" x="1402" y="880" width="218" height="218" frameX="-41" frameY="-42" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_008" x="562" y="874" width="250" height="250" frameX="-25" frameY="-25" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_009" x="814" y="972" width="250" height="250" frameX="-25" frameY="-26" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_010" x="872" y="496" width="274" height="274" frameX="-13" frameY="-14" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_011" x="2" y="590" width="278" height="280" frameX="-12" frameY="-11" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_012" x="1764" y="2" width="282" height="282" frameX="-9" frameY="-10" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_013" x="1180" y="2" width="290" height="290" frameX="-5" frameY="-6" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage1_014" x="298" y="2" width="292" height="292" frameX="-4" frameY="-5" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_000" x="1622" y="1078" width="98" height="100" frameX="-101" frameY="-100" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_002" x="1158" y="1890" width="150" height="150" frameX="-75" frameY="-75" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_003" x="1550" y="1452" width="164" height="168" frameX="-69" frameY="-66" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_004" x="896" y="1588" width="190" height="190" frameX="-55" frameY="-56" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_005" x="966" y="1780" width="190" height="190" frameX="-55" frameY="-56" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_006" x="1144" y="946" width="218" height="218" frameX="-41" frameY="-42" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_007" x="1364" y="1100" width="218" height="218" frameX="-41" frameY="-42" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_008" x="282" y="876" width="250" height="250" frameX="-25" frameY="-25" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_009" x="534" y="1126" width="250" height="250" frameX="-25" frameY="-26" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_010" x="562" y="598" width="274" height="274" frameX="-13" frameY="-14" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_011" x="282" y="594" width="278" height="280" frameX="-12" frameY="-11" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_012" x="1764" y="286" width="282" height="282" frameX="-9" frameY="-10" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_013" x="1472" y="2" width="290" height="290" frameX="-5" frameY="-6" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Division4_Stage2_014" x="2" y="100" width="292" height="292" frameX="-4" frameY="-5" frameWidth="300" frameHeight="300"/>
+    <SubTexture name="Blue_Evolution_3To4_002" x="1624" y="780" width="96" height="96" frameX="-77" frameY="-77" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_008" x="1942" y="1070" width="100" height="100" frameX="-75" frameY="-75" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_009" x="1942" y="1172" width="100" height="100" frameX="-75" frameY="-75" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_010" x="1940" y="1274" width="100" height="100" frameX="-75" frameY="-75" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_011" x="1938" y="1376" width="100" height="100" frameX="-75" frameY="-75" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_012" x="1938" y="1478" width="100" height="100" frameX="-75" frameY="-75" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_013" x="1944" y="862" width="102" height="102" frameX="-74" frameY="-74" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Evolution_3To4_014" x="1942" y="966" width="102" height="102" frameX="-74" frameY="-74" frameWidth="250" frameHeight="250"/>
+    <SubTexture name="Blue_Stage01_Small" x="1092" y="772" width="50" height="50"/>
+    <SubTexture name="Blue_Stage02_Small" x="1092" y="824" width="50" height="50"/>
+    <SubTexture name="Blue_Stage03" x="1624" y="878" width="96" height="96" frameX="-2" frameY="-2" frameWidth="100" frameHeight="100"/>
+    <SubTexture name="Blue_Stage03_Small" x="1092" y="876" width="50" height="50"/>
+    <SubTexture name="Blue_Stage04" x="396" y="1588" width="100" height="100"/>
+    <SubTexture name="Blue_Stage04_Small" x="1092" y="928" width="50" height="50"/>
+    <SubTexture name="Ladder" x="1148" y="692" width="252" height="252"/>
+</TextureAtlas>
