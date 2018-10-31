@@ -97,6 +97,8 @@ function update_cell_timer(timer){
 		timer.B += 1;
 	if (timer.C < 16)
 		timer.C += 1;
+	if (timer.V < 10)
+		timer.V += 1;
 }// update_cell_timers
 
 

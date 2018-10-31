@@ -39,7 +39,7 @@ body {
 	height: 100%;
 	float: right;
 	display: inline;
-	background: white;
+	border-width: 0px;
 }
 #p2-controls > div > img {
 	float: left;

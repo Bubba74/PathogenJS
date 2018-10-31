@@ -40,14 +40,14 @@
 		<canvas id="game-canvas" class="pathogen-window"></canvas>
 	
 		<div id="p1-controls" class="cell-controls" style="width:145px; height:480px;">
-			<div> <label> <input type="radio" name="p1-radio" value=1 checked> <img id="cell_0A" src="/img/cell_0A.png"> </label> <img><img> </div>
+			<div> <label> <input type="radio" name="p1-radio" value=1 checked> <img id="cell_0A" src="/img/cell_0A.png"> </label> <img src=""><img src=""> </div>
 			<div> <label> <input type="radio" name="p1-radio" value=2> <img id="cell_0B" src="/img/cell_0B.png"> </label> <img id="p1b1"> <img id="p1b2"> </div>
 			<div> <label> <input type="radio" name="p1-radio" value=3> <img id="cell_0C" src="/img/cell_0C.png"> </label> <img id="p1c1"> <img id="p1c2"> </div>
 			<div> <label> <input type="radio" name="p1-radio" value=4> <img id="cell_0V" src="/img/cell_0V.png"> </label> <img id="p1v1"> <img id="p1v2"> </div>
 		</div>
 	
 		<div id="p2-controls" class="cell-controls" style="width:145px; height:480px;">
-			<div> <label> <input type="radio" name="p2-radio" value=1 checked> <img id="cell_1A" src="/img/cell_1A.png"> </label> <img><img> </div>
+			<div> <label> <input type="radio" name="p2-radio" value=1 checked> <img id="cell_1A" src="/img/cell_1A.png"> </label> <img src=""><img src=""> </div>
 			<div> <label> <input type="radio" name="p2-radio" value=2> <img id="cell_1B" src="/img/cell_1B.png"> </label> <img id="p2b1"> <img id="p2b2"> </div>
 			<div> <label> <input type="radio" name="p2-radio" value=3> <img id="cell_1C" src="/img/cell_1C.png"> </label> <img id="p2c1"> <img id="p2c2"> </div>
 			<div> <label> <input type="radio" name="p2-radio" value=4> <img id="cell_1V" src="/img/cell_1V.png"> </label> <img id="p2v1"> <img id="p2v2"> </div>
@@ -175,8 +175,11 @@
 
 		if (client.connection == "online")
 			sendClick(mx, my, level);
-		else
+		else 
 			client.game.click(mx, my, player-1, level);
+
+		updateProgressBars();
+		
 			
 	});
 
@@ -207,6 +210,33 @@
 			newGame();
 		}
 	}
+
+	function updateProgressBars(){
+		let p1 = client.game.p1timer, p2 = client.game.p2timer;
+		let progresses = [ {'b':p1.B , 'c':p1.C , 'v':p1.V} , {'b':p2.B , 'c':p2.C , 'v':p2.V} ];
+		let limits = {'b':4 , 'c':8 , 'v':10};
+		let chars = ['b','c','v'];
+
+		for (let p=0; p<2; p++){
+			for (let i=0; i<3; i++){
+				let c = chars[i];
+				let prog = progresses[p][c];
+
+				let src1, src2;
+				if (prog <= limits[c]){
+					src1 = "";
+					src2 = "img/progress_"+prog+"_"+limits[c]+".png";
+				} else {
+					src1 = "img/progress_"+(prog-limits[c])+"_"+limits[c]+".png";
+					src2 = "img/progress_"+limits[c]+"_"+limits[c]+".png";
+				}
+				let prog1 = document.getElementById("p"+(p+1)+c+"1");
+				let prog2 = document.getElementById("p"+(p+1)+c+"2");
+				prog1.src = src1;
+				prog2.src = src2;
+			}
+		}
+	}// updateProgressBars
 
 </script>
 
