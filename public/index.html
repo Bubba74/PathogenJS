@@ -232,32 +232,31 @@
 		let limits = {'b':4 , 'c':8 , 'v':10};
 		let chars = ['b','c','v'];
 
-		for (let p=0; p<2; p++){
-			for (let i=0; i<3; i++){
-				let c = chars[i];
-				let prog = progresses[p][c];
+		let p = client.game.turn;
+		for (let i=0; i<3; i++){
+			let c = chars[i];
+			let prog = progresses[p][c];
 
-				let src1, src2;
-				if (prog <= limits[c]){
-					src1 = "";
-					src2 = "img/progress_"+prog+"_"+limits[c]+".png";
-				} else {
-					src1 = "img/progress_"+(prog-limits[c])+"_"+limits[c]+".png";
-					src2 = "img/progress_"+limits[c]+"_"+limits[c]+".png";
-				}
-				let prog1 = document.getElementById("p"+(p+1)+c+"1");
-				let prog2 = document.getElementById("p"+(p+1)+c+"2");
-				prog1.src = src1;
-				prog2.src = src2;
-				let radio_button = document.getElementById("r"+(p+1)+c);
-				if (prog >= limits[c])
-					radio_button.disabled = false;
-				else
-					radio_button.disabled = true;
+			let src1, src2;
+			if (prog <= limits[c]){
+				src1 = "";
+				src2 = "img/progress_"+prog+"_"+limits[c]+".png";
+			} else {
+				src1 = "img/progress_"+(prog-limits[c])+"_"+limits[c]+".png";
+				src2 = "img/progress_"+limits[c]+"_"+limits[c]+".png";
 			}
-			//Select A-cell automatically
-			document.getElementById("r"+(p+1)+"a").checked = true;
+			let prog1 = document.getElementById("p"+(p+1)+c+"1");
+			let prog2 = document.getElementById("p"+(p+1)+c+"2");
+			prog1.src = src1;
+			prog2.src = src2;
+			let radio_button = document.getElementById("r"+(p+1)+c);
+			if (prog >= limits[c])
+				radio_button.disabled = false;
+			else
+				radio_button.disabled = true;
 		}
+		//Select A-cell automatically
+		document.getElementById("r"+(p+1)+"a").checked = true;
 	}// updateProgressBars
 
 
