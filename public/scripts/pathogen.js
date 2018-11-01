@@ -67,20 +67,25 @@ function draw_tile(ctx, x, y, r, owner, level){
 	}
 }//draw_tile
 
-function draw_tile_image(ctx, left, top, w, owner, level){
+function draw_tile_image(atlases, ctx, left, top, w, owner, level){
 	//Draw background TODO: get rid of this
 	ctx.fillStyle = "#9955ed44";
 	ctx.fillStyle = get_color(owner, level);
-	ctx.fillRect(left+2, top+2, w-4, w-4);
 
-	if (owner == -1) return;
+	if (owner == -1) {
+		ctx.fillRect(left+2, top+2, w-4, w-4);
+		return;
+	}
 
-	let type = ['A', 'B', 'C', 'W'];
-	let img_name = "cell_" + owner + type[level-1];
-	let img = document.getElementById(img_name);
+	//let type = ['A', 'B', 'C', 'W'];
+	//let img_name = "cell_" + owner + type[level-1];
+	//let img = document.getElementById(img_name);
+	
+	let imageName = (owner==0?'Red':'Blue') + '_Stage0' + level;
+	let tex = atlases.getImageAndFrame(imageName);
 
 	ctx.imageSmoothingEnabled = true;
-	ctx.drawImage(img, left, top, w, w);
+	ctx.drawImage(tex.img, 0,0,tex.frame.width,tex.frame.height, left,top,w,w);
 }
 	
 
@@ -104,7 +109,8 @@ function update_cell_timer(timer){
 
 class Pathogen {
 
-	constructor (canvas){
+	constructor (canvas, atlases){
+		this.atlases = atlases;
 		if (canvas){
 			this.width = canvas.width;
 			this.height = canvas.height;
@@ -429,7 +435,7 @@ class Pathogen {
 				//Clear possible traces of previous image
 				if (!clear) this.screen.clearRect(left, top, b.unit, b.unit);
 				//Draw the tile's image
-				draw_tile_image(this.screen, left, top, b.unit, t.owner, t.type);
+				draw_tile_image(this.atlases, this.screen, left, top, b.unit, t.owner, t.type);
 			}
 		
 	}//render

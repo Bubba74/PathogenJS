@@ -40,29 +40,37 @@
 		<canvas id="game-canvas" class="pathogen-window"></canvas>
 	
 		<div id="p1-controls" class="cell-controls" style="width:145px; height:480px;">
-			<div> <label> <input type="radio" name="p1-radio" value=1 checked> <img id="cell_0A" src="/img/cell_0A.png"> </label> <img src=""><img src=""> </div>
-			<div> <label> <input type="radio" name="p1-radio" value=2> <img id="cell_0B" src="/img/cell_0B.png"> </label> <img id="p1b1"> <img id="p1b2"> </div>
-			<div> <label> <input type="radio" name="p1-radio" value=3> <img id="cell_0C" src="/img/cell_0C.png"> </label> <img id="p1c1"> <img id="p1c2"> </div>
-			<div> <label> <input type="radio" name="p1-radio" value=4> <img id="cell_0V" src="/img/cell_0V.png"> </label> <img id="p1v1"> <img id="p1v2"> </div>
+			<div> <label> <input type="radio" name="p1-radio" id="r1a" value=1 checked> <img id="Red_Stage01"> </label> <img src=""><img src=""> </div>
+			<div> <label> <input type="radio" name="p1-radio" id="r1b" value=2> <img id="Red_Stage02"> </label> <img id="p1b1"> <img id="p1b2"> </div>
+			<div> <label> <input type="radio" name="p1-radio" id="r1c" value=3> <img id="Red_Stage03"> </label> <img id="p1c1"> <img id="p1c2"> </div>
+			<div> <label> <input type="radio" name="p1-radio" id="r1v" value=4> <img id="Red_Virus"> </label> <img id="p1v1"> <img id="p1v2"> </div>
 		</div>
 	
 		<div id="p2-controls" class="cell-controls" style="width:145px; height:480px;">
-			<div> <label> <input type="radio" name="p2-radio" value=1 checked> <img id="cell_1A" src="/img/cell_1A.png"> </label> <img src=""><img src=""> </div>
-			<div> <label> <input type="radio" name="p2-radio" value=2> <img id="cell_1B" src="/img/cell_1B.png"> </label> <img id="p2b1"> <img id="p2b2"> </div>
-			<div> <label> <input type="radio" name="p2-radio" value=3> <img id="cell_1C" src="/img/cell_1C.png"> </label> <img id="p2c1"> <img id="p2c2"> </div>
-			<div> <label> <input type="radio" name="p2-radio" value=4> <img id="cell_1V" src="/img/cell_1V.png"> </label> <img id="p2v1"> <img id="p2v2"> </div>
+			<div> <label> <input type="radio" name="p2-radio" id="r2a" value=1 checked> <img id="Blue_Stage01"> </label> <img src=""><img src=""> </div>
+			<div> <label> <input type="radio" name="p2-radio" id="r2b" value=2> <img id="Blue_Stage02"> </label> <img id="p2b1"> <img id="p2b2"> </div>
+			<div> <label> <input type="radio" name="p2-radio" id="r2c" value=3> <img id="Blue_Stage03"> </label> <img id="p2c1"> <img id="p2c2"> </div>
+			<div> <label> <input type="radio" name="p2-radio" id="r2v" value=4> <img id="Blue_Virus"> </label> <img id="p2v1"> <img id="p2v2"> </div>
 		</div>
 	
-		<!-- So the cell_0W.png and cell_1W.png files can be accessed by javascript !-->
-		<img id="cell_0W" src="/img/cell_0W.png" style="display:none;">
-		<img id="cell_1W" src="/img/cell_1W.png" style="display:none;">
 	</div>
 
 
 
 
+<script src="scripts/sprites.js">
+</script>
 <script src="scripts/pathogen.js"></script>
 <script>
+	function loadControlBoxImages(){
+		console.log("Loading control boxes");
+		let controls = ["Red_Virus", "Blue_Virus"];
+		for (let i=0; i<6; i++)
+			controls[controls.length] = (i/3<1?'Red':'Blue')+"_Stage0"+(i%3+1);
+		for (let i=0; i<controls.length; i++)
+			document.getElementById(controls[i]).src = atlases.getImageAndFrame(controls[i]).img.src;
+	} //loadControlBoxImages
+
 	client = {};
 
 	function newUsername(){
@@ -97,9 +105,16 @@
 
 	player = {auth_key: -1, id:-1, index:0};
 
+	var atlases = new TextureAtlasGroup(["res/HD_BlueSprites_1.xml",
+					     "res/HD_BlueSprites_2.xml",
+					     "res/HD_RedSprites_1.xml",
+					     "res/HD_RedSprites_2.xml"],
+						loadControlBoxImages);
+
 	function newGame(){
-		client.game = new Pathogen(canvas);
+		client.game = new Pathogen(canvas, atlases);
 		client.game.render();
+		updateProgressBars();
 	}
 	
 	function packPostMsg(data){
@@ -234,9 +249,17 @@
 				let prog2 = document.getElementById("p"+(p+1)+c+"2");
 				prog1.src = src1;
 				prog2.src = src2;
+				let radio_button = document.getElementById("r"+(p+1)+c);
+				if (prog >= limits[c])
+					radio_button.disabled = false;
+				else
+					radio_button.disabled = true;
 			}
+			//Select A-cell automatically
+			document.getElementById("r"+(p+1)+"a").checked = true;
 		}
 	}// updateProgressBars
+
 
 </script>
 
