@@ -34,6 +34,9 @@ body {
 	background: #8A2BE288;
 	border-radius: 10px;
 }
+.cell-controls > div > label > input:disabled + img{
+	opacity: 0.25;
+}
 .cell-controls > div > img {
 	width: 10px;
 	height: 100%;
