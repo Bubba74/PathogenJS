@@ -114,6 +114,11 @@
 	function newGame(){
 		client.game = new Pathogen(canvas, atlases);
 		client.game.render();
+
+		//Update both client bars
+		client.game.turn = 1;
+		updateProgressBars();
+		client.game.turn = 0;
 		updateProgressBars();
 	}
 	
