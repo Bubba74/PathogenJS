@@ -145,7 +145,7 @@ app.post('/join-game', function(req, resp){
 			lobby[i].starter.end();
 			startGame(lobby[i]);
 			active[active.length] = lobby[i];
-			delete lobby[i];
+			lobby.splice(i,1);
 			break;
 		}
 	}
