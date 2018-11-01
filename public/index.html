@@ -188,13 +188,13 @@
 
 		let level = parseInt(document.querySelector('input[name='+control_box+']:checked').value)
 
+		let success = true;
 		if (client.connection == "online")
 			sendClick(mx, my, level);
 		else 
-			client.game.click(mx, my, player-1, level);
+			success = client.game.click(mx, my, player-1, level);
 
-		updateProgressBars();
-		
+		if (success) updateProgressBars();
 			
 	});
 
