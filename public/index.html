@@ -16,23 +16,37 @@
 
 	<div id="userdiv">
 		<input id="username" size="10" placeholder="username">
-		<input type="button" value="Connect" onclick="play('online')">
+		<input type="button" value="Connect" onclick="enterLobby()">
 		</br>
-		<input type="button" value="Play Offline" onclick="play('offline')">
+		<input type="button" value="Play Offline" onclick="playOffline()">
 	</div>
 
 	<div id="lobby-window">
-		 <form class="formdiv">
+		<iframe width="0" height="0" border="0" name="create_game_dummy" id="create_game_dummy"></iframe>
+		<form class="formdiv" action="/new-game" method="post" target="create_game_dummy" autocomplete="off" id="new-game-form">
 			<!--<label for="opponent_name">Invite Player: </label>--!>
-			Invite Player: 
-			<input type="text" name="opp1">
+			<input type="hidden" name="auth_key"></input>
+			<center>
+			Game Name: 
+			<input type="text" name="name">
 			Board Size: 
 			<input type="text" name="width" maxlength="2" size="2" value=22>
 			x
 			<input type="text" name="height" maxlength="2" size="2" value=18>
+			<!--<input type="submit" value="Send Invite" onclick="document.getElementById('new-game-form').reset()">--!>
 			<input type="submit" value="Send Invite">
+			</center>
 		</form>
-		<div style="background:#FFFFFF44;"></div>
+		<iframe width="0" height="0" border="0" name="join_game_dummy" id="join_game_dummy"></iframe>
+		<form class="formdiv" action="/join-game" method="post" target="join_game_dummy" autocomplete="off" style="bottom:0px;">
+			<input type="hidden" name="auth_key"></input>
+			<center>
+			<h2>Join Game</h2>
+			Game Name:
+			<input type="text" name="name">
+			<input type="submit" value="Join">
+			</center>
+		</form>
 
 	</div> <!-- Lobby Screen --!>
 
@@ -92,7 +106,7 @@
 	username.value = newUsername();
 	username.addEventListener("keydown", function(event){
 		if (event.keyCode == 13){
-			play('online');
+			connect();
 			console.log("Joining game");
 		}
 	});
@@ -130,22 +144,22 @@
 		return post;
 	}// getPostData
 
-	function update(){
+	function getServerClicks(){
 		let tx = {auth_key: player.auth_key, turn_index: player.index};
 		let data = packPostMsg(tx);
 
-		fetch ("/update", data)
+		fetch ("/get-clicks", data)
 		.then ( function (response){
 			return response.json();
 		}).then ( function (body){
 			let turns = body.turns;
 			for (let i=0; i<turns.length; i++){
 				console.log("Processing turn: "+turns[i]);
-				while (game.busy);
-				game.click(turns[i].col, turns[i].row, turns[i].player, turns[i].type)
+				while (client.game.busy);
+				client.game.click(turns[i].col, turns[i].row, turns[i].player, turns[i].type)
 				player.index += 1;
 			}
-			setTimeout(update, 1000);
+			setTimeout(getServerClicks, 1000);
 		});
 	}// update
 
@@ -157,9 +171,11 @@
 		})
 		.then( function (body){
 			player.auth_key = body.auth_key;
-			player.id = body.player_id;
-			console.log("Connected: "+player.id+":"+player.auth_key);
-			setTimeout( update, 1000);
+			//Load auth_key into new-game and join-game forms
+			document.getElementsByName("auth_key").forEach(function (e){
+				e.value = player.auth_key;
+			});
+			console.log("Connected: "+player.auth_key);
 		});
 	}// connect
 
@@ -169,7 +185,7 @@
 
 		console.log("Sending Click: "+click);
 
-		fetch ("/click", data)
+		fetch ("/put-click", data)
 		.then( function (response){
 			let success = response.json().success;
 		});
@@ -184,12 +200,12 @@
 		my = Math.floor(my/client.game.board.unit);
 
 
-		let player = client.game.turn+1;
+		let playerId = client.game.turn+1;
 		if (player.id == 0)
-			player = 1;
+			playerId = 1;
 		if (player.id == 1)
-			player = 2;
-		let control_box = "p"+player+"-radio";
+			playerId = 2;
+		let control_box = "p"+playerId+"-radio";
 
 		let level = parseInt(document.querySelector('input[name='+control_box+']:checked').value)
 
@@ -203,33 +219,40 @@
 			
 	});
 
-	function play (connectMode){
+	function enterLobby(){
 		let name = username.value;
 		if (name === "") {
 			username.value = newUsername();
 			return;
 		}
 
-		if (connectMode == 'online'){
-			userlabel.innerHTML = "Username: " + name;
-			userlabel.style.display = "inline-block";
-			client.name = name;
-			userdiv.style.display = "none";
-			winLobby.style.display = "inline-block";
-			client.connection = "online";
-			newGame();
-			connect();
-		} else {
-			userlabel.innerHTML = "Local Game";
-			userlabel.style.display = "inline-block";
-			userdiv.style.display = "none";
-			winGame.style.display = "inline-block";
-			player.id = -1;
-			client.name = "";
-			client.connection = "offline";
-			newGame();
-		}
+		userlabel.innerHTML = "Username: " + name;
+		userlabel.style.display = "inline-block";
+		client.name = name;
+		userdiv.style.display = "none";
+		winLobby.style.display = "inline-block";
+		client.connection = "online";
+		connect();
 	}
+
+	function playOffline(){
+		userlabel.innerHTML = "Local Game";
+		userlabel.style.display = "inline-block";
+		userdiv.style.display = "none";
+		winGame.style.display = "inline-block";
+		player.id = -1;
+		client.name = "";
+		client.connection = "offline";
+		newGame();
+	} //playOffline
+	
+	function playOnline(){
+		winLobby.style.display = "none";
+		winGame.style.display = "inline-block";
+		client.connection = "online"
+		newGame();
+		getServerClicks();
+	} //playOnline
 
 	function updateProgressBars(){
 		let p1 = client.game.p1timer, p2 = client.game.p2timer;
@@ -263,6 +286,29 @@
 		//Select A-cell automatically
 		document.getElementById("r"+(p+1)+"a").checked = true;
 	}// updateProgressBars
+
+	function processCreateGameResponse (obj){
+		console.log("Created a new game!");
+		console.log(obj);
+		alert("Someone joined!");
+		player.id = 0;
+		playOnline();
+	} //processCreateGameResponse
+
+	function processJoinGameResponse (obj){
+		console.log("Joining a game!");
+		console.log(obj);
+		alert("Joining new game!");
+		player.id = 1;
+		playOnline();
+	} //processJoinGameResponse
+	document.getElementById("create_game_dummy").onload = function (){
+		processCreateGameResponse(JSON.parse(this.contentDocument.body.innerText));
+	};
+	document.getElementById("join_game_dummy").onload = function (){
+		processJoinGameResponse(JSON.parse(this.contentDocument.body.innerText));
+	};
+	
 
 
 </script>

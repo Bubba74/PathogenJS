@@ -4,7 +4,9 @@ const Pathogen = require('./public/scripts/pathogen.js')
 const express = require('express');
 const app = express();
 
-var games = [];
+// Connections available
+var active = [];
+var lobby = [];
 
 class Game {
 	constructor(){
@@ -44,6 +46,12 @@ class Game {
 
 } //Game
 
+function startGame(board){
+	board.game = new Game();
+	board.game.p1 = board.p1;
+	board.game.p2 = board.p2;
+} //startGame
+
 function getKey(){
 	let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
 	let length = 10;
@@ -58,27 +66,21 @@ function getKey(){
 app.use(express.static('public'));
 app.use(express.json());
 
+//Parse form data from POST
+app.use(express.urlencoded({
+    extended: true
+}));
+//app.use(bodyParser.json());
+
 
 app.post('/new-user', function(req, resp){
 	let auth_key = getKey();
-	let len = games.length;
-	let player_id = -1;
-	//If there are no games yet, or the last game is full
-	if (!len || games[len-1].p2 !== '0'){
-		games[len] = new Game();
-		games[len].p1 = auth_key;
-		player_id = 0;
-	} else {
-		games[len-1].p2 = auth_key;
-		player_id = 1;
-	}
-
-	let data = {auth_key: auth_key, player_id: player_id};
+	let data = {auth_key: auth_key};
 	resp.send(JSON.stringify(data));
 	resp.end();
 });// new-user
 
-app.post('/click', function(req, resp){
+app.post('/put-click', function(req, resp){
 	//JSON data
 	let data = req.body;
 	//User auth key
@@ -91,7 +93,8 @@ app.post('/click', function(req, resp){
 	//Process click (only on game that has the auth_key
 	//	this is checked in the click() function.
 	let success = false;
-	games.forEach(function (game){
+	active.forEach(function (board){
+		game = board.game;
 		if (game.click(auth_key, col, row, type))
 			success = true;
 	});// games
@@ -100,9 +103,9 @@ app.post('/click', function(req, resp){
 	let obj = {success: success};
 	resp.send(JSON.stringify(obj));
 	resp.end();
-});// click
+});// put-click
 
-app.post('/update', function(req, resp){
+app.post('/get-clicks', function(req, resp){
 	//JSON data
 	let data = req.body;
 	//User auth key
@@ -110,9 +113,9 @@ app.post('/update', function(req, resp){
 	let index = data.turn_index;
 
 	let turns;
-	for (let i=0; i<games.length; i++){
-		if (games[i].hasKey(auth_key)){
-			turns = games[i].getTurns(index);
+	for (let i=0; i<active.length; i++){
+		if (active[i].game.hasKey(auth_key)){
+			turns = active[i].game.getTurns(index);
 			break;
 		}
 	}
@@ -123,7 +126,32 @@ app.post('/update', function(req, resp){
 
 	const used = process.memoryUsage().heapUsed / 1024 / 1024;
 	console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
-});// update
+});// get-clicks
+
+app.post('/new-game', function(req, resp){
+	console.log("Creating new game for request: "+JSON.stringify(req.body));
+	lobby[lobby.length] = {game:null, name:req.body.name , p1:req.body.auth_key , p2:-1 , width:req.body.width , height:req.body.height};
+	lobby[lobby.length-1].starter = resp;
+});// new-game
+
+app.post('/join-game', function(req, resp){
+	console.log("Joining game for request: "+JSON.stringify(req.body));
+	let found = false;
+	for (let i=0; i<lobby.length; i++){
+		if (lobby[i].name == req.body.name){
+			found = true;
+			lobby[i].p2 = req.body.auth_key;
+			lobby[i].starter.send(JSON.stringify({success: true}));
+			lobby[i].starter.end();
+			startGame(lobby[i]);
+			active[active.length] = lobby[i];
+			delete lobby[i];
+			break;
+		}
+	}
+	resp.send(JSON.stringify({success: found}));
+	resp.end();
+});// join-game
 
 let port = 80;
 
