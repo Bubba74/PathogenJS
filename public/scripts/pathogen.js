@@ -72,8 +72,8 @@ function draw_tile_image(atlases, ctx, left, top, w, owner, level){
 	ctx.fillStyle = "#9955ed44";
 	ctx.fillStyle = get_color(owner, level);
 
+	if (level != 4) ctx.fillRect(left+2, top+2, w-4, w-4);
 	if (owner == -1) {
-		ctx.fillRect(left+2, top+2, w-4, w-4);
 		return;
 	}
 
@@ -85,7 +85,7 @@ function draw_tile_image(atlases, ctx, left, top, w, owner, level){
 	let tex = atlases.getImageAndFrame(imageName);
 
 	ctx.imageSmoothingEnabled = true;
-	ctx.drawImage(tex.img, 0,0,tex.frame.width,tex.frame.height, left,top,w,w);
+	ctx.drawImage(tex.img, 0,0,tex.frame.width,tex.frame.height, left+0.10*w,top+0.10*w,w*.8,w*.8);
 }
 	
 
