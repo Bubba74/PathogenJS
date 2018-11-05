@@ -269,8 +269,14 @@ class Pathogen {
 	//TODO C-cell -> WALL does not emit C-level wave
 
 	isValidClick (col, row, new_owner, type){
-		if (new_owner !== this.turn) return false;
-		if (col < 0 || col >= this.tiles.length || row < 0 || row >= this.tiles[0].length) return false;
+		if (new_owner !== this.turn){
+			this.clickError = "It's not your turn!";
+			return false;
+		}
+		if (col < 0 || col >= this.tiles.length || row < 0 || row >= this.tiles[0].length) {
+			this.clickError = "Click is out of bounds";
+			return false;
+		}
 
 		let old_owner = this.tiles[col][row].owner;
 		let old_type  = this.tiles[col][row].type;
@@ -405,13 +411,14 @@ class Pathogen {
 			let wave = obj.waves_buf.pop();
 			obj.upgradeCell(wave.x, wave.y, wave.owner, wave.level, false);
 		}
-		obj.render(false);
 	
-		if (obj.waves.length)
+		if (obj.waves.length){
+			obj.render(false);
 			setTimeout(obj.processWaves, obj.animation_delay, obj);
-		else {
+		} else {
 			obj.turn = 1 - obj.turn;
 			obj.busy = false;
+			obj.render(false);
 		}
 	}//click
 
@@ -442,7 +449,7 @@ class Pathogen {
 
 	renderBorder (){
 		let colors = ["#953355", "#51739e"];
-		this.screen.fillStyle = colors[1-this.turn];
+		this.screen.fillStyle = colors[this.turn];
 		let b = this.board;
 		let ctx = this.screen;
 
