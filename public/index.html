@@ -213,8 +213,6 @@
 
 		if (client.connection == "online"){
 			let success = sendClick(mx, my, level);
-			//if (success) setTimeout(getServerClicks,1000);
-				//Ideally only ping server for clicks when it's not your turn
 		} else 
 			client.game.click(mx, my, playerId-1, level);
 
@@ -301,6 +299,7 @@
 		}).then( function (json_data){
 			if (json_data.players > 1){
 				console.log("Players have connected, starting game");
+				document.title = "Pathogen: Red";
 				playOnline();
 			} else {
 				console.log("No one has joined yet :( will check again in 2 seconds");
@@ -327,6 +326,7 @@
 			console.log(obj);
 			player.id = 1;
 			player.auth_key = obj.auth_key;
+			document.title = "Pathogen: Blue";
 			playOnline();
 		} else {
 			console.log("Join Game failed");
