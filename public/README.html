@@ -11,16 +11,50 @@
 
 <h2> Future Features </h2>
 <ul>
-	<li>Multiplayer</li>
-	<li>Virus</li>
+	<li>Cookies for re-connection</li>
+	<li>Multiplayer
+		<ul>
+		<li>Tournmanent?</li>
+		<li>Lobby</li>
+		<li>3-4 Players</li>
+		<li>Use webSocket (socket.io) to keep conn. open between server and client
+			<ul>
+			<li><strike>Notify a host that a client connected.</strike></li>
+			<li><strike>Send click updates to clients?</strike></li>
+			<li>Detect a client disconnected (and drop game invites etc.)</li>
+			<li>Notify players that opponent disconnected.</li>
+			</ul>
+		</li>
+		</ul>
+	</li>
+	<li>Design Changes
+		<ul>
+		<li>Title screen</li>
+		<li><strike>Opening Screen: Host/Join/Offline</strike></li>
+		</ul>
+	</li>
+	<li>Game invite
+		<ul>
+		<li>Custom Game Board</li>
+		</ul>
+	</li>
+	<li>Better textures
+		<ul>
+		<li>For progress bars</li>
+		<li>To show contiguous groups of cells</li>
+		<li>Animations? At least for destruction/upgrade</li>
+		</ul>
+	</li>
+	<li>Better background colors for cell tiles; both red+blue</li>
+	
+
 </ul>
 
-<h2> Current Bugs </h2>
+<h2> Current Patches</h2>
 <ul>
-	<li>No cell-use counters</li>
-	<li>Virus overflows border</li>
-	<li>Virus (at least) causes severe lag</li>
 	<li>Client sync error; the current player lags behind</li>
+	<li>Update the render loop so that only the images from the last tick are updated, not just this move</li>
+	<li>Some abstracted animation manager</li>
 </ul>
 
 </body>

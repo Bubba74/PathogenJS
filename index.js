@@ -4,7 +4,9 @@ const Pathogen = require('./public/scripts/pathogen.js')
 const express = require('express');
 const app = express();
 
-var games = [];
+// Connections available
+var active = [];
+var lobby = [];
 
 class Game {
 	constructor(){
@@ -44,41 +46,50 @@ class Game {
 
 } //Game
 
-function getKey(){
-	let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-	let length = 10;
-	let key = "";
+function startGame(board){
+	board.game = new Game();
+	board.game.p1 = board.p1;
+	board.game.p2 = board.p2;
+} //startGame
 
-	for (let i=0; i<length; i++)
+function genKey(chars, len){
+	let key = "";
+	for (let i=0; i<len; i++)
 		key += chars[Math.floor(Math.random()*chars.length)];
 	return key;
-}// getKey
+} //getString
+
+function genUserKey (){
+	let chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	let length = 10;
+	return genKey(chars, length);
+} //getKey
+
+function genGameCode (){
+	let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	let length = 5;
+	return genKey(chars, length);
+} //getGameCode
 
 
 app.use(express.static('public'));
 app.use(express.json());
 
+//Parse form data from POST
+app.use(express.urlencoded({
+    extended: true
+}));
+//app.use(bodyParser.json());
+
 
 app.post('/new-user', function(req, resp){
-	let auth_key = getKey();
-	let len = games.length;
-	let player_id = -1;
-	//If there are no games yet, or the last game is full
-	if (!len || games[len-1].p2 !== '0'){
-		games[len] = new Game();
-		games[len].p1 = auth_key;
-		player_id = 0;
-	} else {
-		games[len-1].p2 = auth_key;
-		player_id = 1;
-	}
-
-	let data = {auth_key: auth_key, player_id: player_id};
+	let auth_key = genUserKey();
+	let data = {auth_key: auth_key};
 	resp.send(JSON.stringify(data));
 	resp.end();
 });// new-user
 
-app.post('/click', function(req, resp){
+app.post('/put-click', function(req, resp){
 	//JSON data
 	let data = req.body;
 	//User auth key
@@ -91,7 +102,8 @@ app.post('/click', function(req, resp){
 	//Process click (only on game that has the auth_key
 	//	this is checked in the click() function.
 	let success = false;
-	games.forEach(function (game){
+	active.forEach(function (board){
+		game = board.game;
 		if (game.click(auth_key, col, row, type))
 			success = true;
 	});// games
@@ -100,19 +112,19 @@ app.post('/click', function(req, resp){
 	let obj = {success: success};
 	resp.send(JSON.stringify(obj));
 	resp.end();
-});// click
+});// put-click
 
-app.post('/update', function(req, resp){
+app.post('/get-clicks', function(req, resp){
 	//JSON data
 	let data = req.body;
 	//User auth key
 	let auth_key = data.auth_key;
 	let index = data.turn_index;
 
-	let turns;
-	for (let i=0; i<games.length; i++){
-		if (games[i].hasKey(auth_key)){
-			turns = games[i].getTurns(index);
+	let turns = [];
+	for (let i=0; i<active.length; i++){
+		if (active[i].game.hasKey(auth_key)){
+			turns = active[i].game.getTurns(index);
 			break;
 		}
 	}
@@ -123,7 +135,60 @@ app.post('/update', function(req, resp){
 
 	const used = process.memoryUsage().heapUsed / 1024 / 1024;
 	console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
-});// update
+});// get-clicks
+
+app.post('/new-game', function(req, resp){
+	console.log("Creating new game for request: "+JSON.stringify(req.body));
+	let key = genGameCode();
+	let userKey = genUserKey();
+	lobby[lobby.length] = {game:null, code:key, p1:userKey, p2:-1, width:req.body.width, height:req.body.height};
+
+	//Send the game code back to the client
+	let obj = {code:key, auth_key:userKey};
+	resp.send(JSON.stringify(obj));
+	resp.end();
+});// new-game
+
+app.post('/game-status', function(req, resp){
+	console.log("Checking game status for request: "+JSON.stringify(req.body));
+	let key = req.body.auth_key;
+	let found = false;
+	for (let i=0; i<active.length; i++){
+		if (active[i].p1 == key) {
+			found = true;
+			break;
+		}
+	};
+	let data = {players: found?2:1};
+	resp.send(JSON.stringify(data));
+	resp.end();
+}); //game-status
+
+app.post('/join-game', function(req, resp){
+	console.log("Joining game for request: "+JSON.stringify(req.body));
+	let found = false;
+	let code = req.body.code.toUpperCase();
+	let userKey = genUserKey();
+	for (let i=0; i<lobby.length; i++){
+		if (lobby[i].code == code){
+			found = true;
+			lobby[i].p2 = userKey;
+			startGame(lobby[i]);
+			active[active.length] = lobby[i];
+			lobby.splice(i,1);
+			break;
+		}
+	}
+	let ret = {success: found};
+	if (found){
+		ret.auth_key = userKey;
+	} else {
+		ret.error = "Could not find game with id: "+code;
+	}
+		
+	resp.send(JSON.stringify(ret));
+	resp.end();
+});// join-game
 
 let port = 80;
 
