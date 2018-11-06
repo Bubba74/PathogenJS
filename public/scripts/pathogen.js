@@ -159,7 +159,9 @@ class Pathogen {
 		this.scoreboard = {
 			total: b.width * b.height,
 			p0: 0,
-			p1: 0
+			p0_solid: 0,
+			p1: 0,
+			p1_solid: 0
 		};
 		console.log("Scoreboard");
 		console.log(this.scoreboard);
@@ -181,13 +183,22 @@ class Pathogen {
 	updateScoreboard(){
 		this.scoreboard.p0 = 0;
 		this.scoreboard.p1 = 0;
+		this.scoreboard.p0_solid = 0;
+		this.scoreboard.p1_solid = 0;
 		let b = this.board;
 		for (let i=0; i<b.width; i++)
 			for (let j=0; j<b.height; j++)
-				if (this.tiles[i][j].owner == 0)
-					this.scoreboard.p0++;
-				else if (this.tiles[i][j].owner == 1)
-					this.scoreboard.p1++;
+				if (this.tiles[i][j].owner == 0){
+					if (this.tiles[i][j].type == 4)
+						this.scoreboard.p0_solid++;
+					else
+						this.scoreboard.p0++;
+				} else if (this.tiles[i][j].owner == 1) {
+					if (this.tiles[i][j].type == 4)
+						this.scoreboard.p1_solid++;
+					else
+						this.scoreboard.p1++;
+				}
 		console.log("Updated scoreboard");
 		console.log(this.scoreboard);
 	}//updateScoreboard
@@ -493,6 +504,7 @@ class Pathogen {
 	renderScoreboard(){
 		let bgColor = "#22222277";
 		let colors = ["#953355", "#51739e"];
+		let solids = ["#762843", "#3b5372"];
 		let b = this.board;
 		let ctx = this.screen;
 
@@ -513,9 +525,22 @@ class Pathogen {
 			ctx.fillStyle = colors[i];
 			ctx.fillRect(left,top,w*val,h);
 			left += val*w;
+			let solid_val = this.scoreboard['p'+i+'_solid']/total;
+			ctx.fillStyle = solids[i];
+			ctx.fillRect(left,top,w*solid_val,h);
+			left += solid_val*w;
 		}
 		ctx.fillStyle = bgColor;
 		ctx.fillRect(left, top, b.x+w-left, h);
+
+		//Reset left bound
+		left = b.x;
+		ctx.fillStyle = "#FFF"
+		for (let i=0; i<=10; i++){
+			ctx.fillRect(left-1,top,2,h);
+			left += w/10.0;
+		}
+		
 	}//renderScoreboard
 
 }//Pathogen
