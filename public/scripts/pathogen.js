@@ -161,7 +161,8 @@ class Pathogen {
 			p0: 0,
 			p0_solid: 0,
 			p1: 0,
-			p1_solid: 0
+			p1_solid: 0,
+			empty: b.width*b.height
 		};
 		console.log("Scoreboard");
 		console.log(this.scoreboard);
@@ -185,6 +186,7 @@ class Pathogen {
 		this.scoreboard.p1 = 0;
 		this.scoreboard.p0_solid = 0;
 		this.scoreboard.p1_solid = 0;
+		this.scoreboard.empty = this.scoreboard.total;
 		let b = this.board;
 		for (let i=0; i<b.width; i++)
 			for (let j=0; j<b.height; j++)
@@ -193,15 +195,42 @@ class Pathogen {
 						this.scoreboard.p0_solid++;
 					else
 						this.scoreboard.p0++;
+					this.scoreboard.empty--;
 				} else if (this.tiles[i][j].owner == 1) {
 					if (this.tiles[i][j].type == 4)
 						this.scoreboard.p1_solid++;
 					else
 						this.scoreboard.p1++;
+					this.scoreboard.empty--;
 				}
-		console.log("Updated scoreboard");
-		console.log(this.scoreboard);
+		//console.log("Updated scoreboard");
+		//console.log(this.scoreboard);
 	}//updateScoreboard
+
+	checkVictory(){
+		let res = {victory: false, type: "", player: ""};
+
+		let total = this.scoreboard.total;
+		let r_solid = this.scoreboard.p0_solid;
+		let b_solid = this.scoreboard.p1_solid;
+		if (r_solid > total/2)
+			res = {victory: true, type: "domination", player: "red"};
+		if (b_solid > total/2)
+			res = {victory: true, type: "domination", player: "blue"};
+
+		if (this.empty == 0){
+			res.victory = true;
+			res.type = "game_end";
+
+			let r = this.scoreboard.p0 + r_solid;
+			let b = this.scoreboard.p1 + b_solid;
+			if (r>b) res.player = "red";
+			if (b>r) res.player = "blue";
+		}
+		//console.log("\nVictory");
+		//console.log(res);
+		return res;
+	}//checkVictory
 
 	resetModifiers(){
 		for (let i=0; i<this.board.width; i++)
@@ -456,6 +485,7 @@ class Pathogen {
 			obj.turn = 1 - obj.turn;
 			obj.busy = false;
 			obj.render(false);
+			obj.checkVictory();
 		}
 	}//click
 
@@ -513,8 +543,8 @@ class Pathogen {
 		let left = b.x;
 		let w = b.width*b.unit;
 		let h = 20;
-		console.log("Scoreboard bounds");
-		console.log({top:top,left:left,w:w,h:h});
+		//console.log("Scoreboard bounds");
+		//console.log({top:top,left:left,w:w,h:h});
 
 		//Clear rect there, important as the colors drawn are transparent
 		ctx.clearRect(left, top, w, h);
