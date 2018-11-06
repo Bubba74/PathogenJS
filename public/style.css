@@ -3,6 +3,21 @@ body {
 	background-image: "img/StaticBG.jpg";
 }
 
+.menu {
+	background-color: lightgreen;
+	border-radius: 10px;
+	box-sizing: border-box;
+	padding: 20px;
+
+	margin: auto;
+	width: 300px;
+	height: 200px;
+
+	position: absolute;
+	top: calc(50% - 100px);
+	left: calc(50% - 150px);
+}
+
 .pathogen-window {
 	border: 0px solid #FF0000;
 	background: #00000000;
@@ -48,6 +63,7 @@ body {
 	float: left;
 }
 
+/*
 #lobby-window {
 	position: absolute;
 	width:  800px;
@@ -61,38 +77,22 @@ body {
 	padding: 20px;
 	display: none;
 }
+*/
 
 .formdiv {
-	background-color: lightgreen;
-	border-radius: 5px;
 	padding: 20px;
 	display: inline-block;
 	width: calc(100% - 40px); 
 }
 
-#userdiv {
-	display: block;
-	background-color: lightgreen;
-	border-radius: 10px;
-
-	position: absolute;
-	width: 300px;
-	height: 200px;
-	left: 50%;
-	top: 50%;
-	margin-top: -100px;
-	margin-left: -150px;
-
-	box-sizing: border-box;
-	padding: 20px;
-}
-#userdiv > input {
+.menu > input {
 	font-size: 25px;
 	width: 100%;
 	margin: 10px;
 	margin-left: 0px;
 }
-#userdiv > input[type="button"] {
+
+.menu > input[type="button"] {
 	background: blueviolet;
 	border-radius: 5px;
 	color: white;
