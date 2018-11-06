@@ -211,12 +211,14 @@
 
 		let level = parseInt(document.querySelector('input[name='+control_box+']:checked').value)
 
-		if (client.connection == "online"){
-			let success = sendClick(mx, my, level);
-		} else 
-			client.game.click(mx, my, playerId-1, level);
+		let success;
+		if (client.connection == "online")
+			success = sendClick(mx, my, level);
+		else 
+			success = client.game.click(mx, my, playerId-1, level);
 
-		if (client.connection == "offline")
+		//When the game is online, progress bars are updated in the getServerClicks function
+		if (client.connection == "offline" && success)
 			updateProgressBars();
 			
 	});
