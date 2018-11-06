@@ -156,6 +156,14 @@ class Pathogen {
 			this.tiles[this.tiles.length] = col;
 		}
 
+		this.scoreboard = {
+			total: b.width * b.height,
+			p0: 0,
+			p1: 0
+		};
+		console.log("Scoreboard");
+		console.log(this.scoreboard);
+
 		//Store instances of waves, to iterate over 1 at a time
 		this.waves = [];
 		this.waves_buf = [];
@@ -169,6 +177,20 @@ class Pathogen {
 		this.p1timer = get_cell_timer();
 		this.p2timer = get_cell_timer();
 	}//constructor
+
+	updateScoreboard(){
+		this.scoreboard.p0 = 0;
+		this.scoreboard.p1 = 0;
+		let b = this.board;
+		for (let i=0; i<b.width; i++)
+			for (let j=0; j<b.height; j++)
+				if (this.tiles[i][j].owner == 0)
+					this.scoreboard.p0++;
+				else if (this.tiles[i][j].owner == 1)
+					this.scoreboard.p1++;
+		console.log("Updated scoreboard");
+		console.log(this.scoreboard);
+	}//updateScoreboard
 
 	resetModifiers(){
 		for (let i=0; i<this.board.width; i++)
@@ -402,8 +424,6 @@ class Pathogen {
 	}//click
 
 	processWaves(obj){
-		//console.log("Turn: "+obj.turn);
-		
 		//Swap waves and waves_buf arrays
 		let temp = obj.waves;
 		obj.waves = obj.waves_buf;
@@ -416,6 +436,7 @@ class Pathogen {
 			obj.upgradeCell(wave.x, wave.y, wave.owner, wave.level, false);
 		}
 	
+		obj.updateScoreboard();
 		if (obj.waves.length){
 			obj.render(false);
 			if (!this.canvas) obj.processWaves(obj);
@@ -434,6 +455,7 @@ class Pathogen {
 			this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
 
 		this.renderBorder();
+		this.renderScoreboard();
 		
 		let b = this.board;
 		for (let i=0; i<b.width; i++)
@@ -467,6 +489,34 @@ class Pathogen {
 		ctx.fillRect(b.x-5, b.y-5, 5, b.height*b.unit+10);
 		ctx.fillRect(b.x+b.width*b.unit, b.y-5, 5, b.height*b.unit+10);
 	}//renderBorder
+
+	renderScoreboard(){
+		let bgColor = "#22222277";
+		let colors = ["#953355", "#51739e"];
+		let b = this.board;
+		let ctx = this.screen;
+
+		//Bounds of scoreboard relative to x,y of game canvas
+		let top = b.y-40;
+		let left = b.x;
+		let w = b.width*b.unit;
+		let h = 20;
+		console.log("Scoreboard bounds");
+		console.log({top:top,left:left,w:w,h:h});
+
+		//Clear rect there, important as the colors drawn are transparent
+		ctx.clearRect(left, top, w, h);
+		
+		let total = this.scoreboard.total;
+		for (let i=0; i<2; i++){
+			let val = this.scoreboard['p'+i]/total;
+			ctx.fillStyle = colors[i];
+			ctx.fillRect(left,top,w*val,h);
+			left += val*w;
+		}
+		ctx.fillStyle = bgColor;
+		ctx.fillRect(left, top, b.x+w-left, h);
+	}//renderScoreboard
 
 }//Pathogen
 
