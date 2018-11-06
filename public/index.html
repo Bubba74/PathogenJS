@@ -151,6 +151,7 @@
 
 	function newGame(){
 		client.game = new Pathogen(canvas, atlases);
+		client.game.onwin = endgame;
 		client.game.render();
 
 		//Update both client bars
@@ -257,6 +258,18 @@
 		newGame();
 		getServerClicks();
 	} //playOnline
+
+	function endgame(stats){
+		let text = "The game was won by ";
+		if (stats.player == "red") text += "Red";
+		else if (stats.player == "blue") text += "Blue";
+		else text = "The game was a tie";
+		text += "! in a "+stats.type+" victory!";
+		console.log("Game ended!   "+text);
+		
+		label = '<label style="background: black; color: white;">'+text+'</label>';
+		document.body.innerHTML = label;
+	}//endgame
 
 	function updateProgressBars(){
 		let p1 = client.game.p1timer, p2 = client.game.p2timer;

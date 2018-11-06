@@ -126,7 +126,7 @@ class Pathogen {
 			this.useControlPanels = !(this.p1panel == null || this.p2panel == null);
 		}
 
-		let u=30, w=30, h=20;
+		let u=60, w=10, h=6;
 		this.board = {
 			unit: u,
 			width: w,
@@ -164,8 +164,8 @@ class Pathogen {
 			p1_solid: 0,
 			empty: b.width*b.height
 		};
-		console.log("Scoreboard");
-		console.log(this.scoreboard);
+		this.res = {victory: false, type:"", player:""};
+		this.onwin = null;
 
 		//Store instances of waves, to iterate over 1 at a time
 		this.waves = [];
@@ -207,29 +207,33 @@ class Pathogen {
 		//console.log(this.scoreboard);
 	}//updateScoreboard
 
+	/* Track Game Stats
+	*
+	* Red/blue blocks per turn
+	*
+	*/
 	checkVictory(){
-		let res = {victory: false, type: "", player: ""};
+		this.res = {victory: false, type: "", player: ""};
 
 		let total = this.scoreboard.total;
 		let r_solid = this.scoreboard.p0_solid;
 		let b_solid = this.scoreboard.p1_solid;
 		if (r_solid > total/2)
-			res = {victory: true, type: "domination", player: "red"};
+			this.res = {victory: true, type: "domination", player: "red"};
 		if (b_solid > total/2)
-			res = {victory: true, type: "domination", player: "blue"};
+			this.res = {victory: true, type: "domination", player: "blue"};
 
-		if (this.empty == 0){
-			res.victory = true;
-			res.type = "game_end";
+		if (this.scoreboard.empty == 0){
+			this.res.victory = true;
+			this.res.type = "game_end";
 
 			let r = this.scoreboard.p0 + r_solid;
 			let b = this.scoreboard.p1 + b_solid;
-			if (r>b) res.player = "red";
-			if (b>r) res.player = "blue";
+			if (r>b) this.res.player = "red";
+			if (b>r) this.res.player = "blue";
 		}
-		//console.log("\nVictory");
-		//console.log(res);
-		return res;
+		if (this.res.victory && this.onwin)
+			this.onwin(this.res);
 	}//checkVictory
 
 	resetModifiers(){
