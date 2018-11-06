@@ -393,7 +393,11 @@ class Pathogen {
 		this.upgradeCell(col, row, new_owner, type, true);
 
 		console.log("Clicked ["+col+","+row+"] "+new_owner+":"+type);
-		setTimeout(this.processWaves, this.animation_delay, this);
+		if (!this.canvas){
+			this.processWaves(this);
+		} else {
+			setTimeout(this.processWaves, this.animation_delay, this);
+		}
 		return true;
 	}//click
 
@@ -414,7 +418,8 @@ class Pathogen {
 	
 		if (obj.waves.length){
 			obj.render(false);
-			setTimeout(obj.processWaves, obj.animation_delay, obj);
+			if (!this.canvas) obj.processWaves(obj);
+			else setTimeout(obj.processWaves, obj.animation_delay, obj);
 		} else {
 			obj.turn = 1 - obj.turn;
 			obj.busy = false;
