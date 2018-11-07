@@ -356,6 +356,21 @@
 	};
 	
 
+	function resizeCanvas(){
+		canvas.width  = document.body.clientWidth;
+		canvas.height = document.body.clientHeight;
+		if (client.game)
+			client.game.resize();
+	}
+	let resize_timer = undefined;
+	window.addEventListener("resize", function(){
+		if (resize_timer !== undefined){
+			clearTimeout(resize_timer);
+			resize_timer = undefined;
+		} else {
+			resize_timer = setTimeout(resizeCanvas, 1500);
+		}
+	});
 
 </script>
 
