@@ -150,7 +150,7 @@
 						loadControlBoxImages);
 
 	function newGame(){
-		client.game = new Pathogen(canvas, atlases);
+		client.game = new Pathogen(22,18,canvas, atlases);
 		client.game.onwin = endgame;
 		client.game.render();
 
@@ -357,11 +357,17 @@
 	
 
 	function resizeCanvas(){
+		if (document.body.clientWidth == canvas.width &&
+		    document.body.clientHeight == canvas.height)
+			return;
+
 		canvas.width  = document.body.clientWidth;
 		canvas.height = document.body.clientHeight;
 		if (client.game)
 			client.game.resize();
 	}
+	setInterval(resizeCanvas, 500);
+	/*
 	let resize_timer = undefined;
 	window.addEventListener("resize", function(){
 		if (resize_timer !== undefined){
@@ -371,6 +377,7 @@
 			resize_timer = setTimeout(resizeCanvas, 1500);
 		}
 	});
+	*/
 
 </script>
 

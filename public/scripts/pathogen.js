@@ -109,7 +109,7 @@ function update_cell_timer(timer){
 
 class Pathogen {
 
-	constructor (canvas, atlases){
+	constructor (cols, rows, canvas, atlases){
 		this.atlases = atlases;
 		if (canvas){
 			this.width = canvas.width;
@@ -126,26 +126,18 @@ class Pathogen {
 			this.useControlPanels = !(this.p1panel == null || this.p2panel == null);
 		}
 
-		let u=60, w=10, h=6;
+		let u=60;
 		this.board = {
+			width: cols,
+			height: rows,
 			unit: u,
-			width: w,
-			height: h,
-			x: (this.width-u*w)/2,
-			y: (this.height-u*h)/2
+			x: null,
+			y: null
 		};
+		this.calculateBoardBounds();
 
 		//Position control panels
-		if (this.useControlPanels){
-			let b = this.board;
-			this.p1panel.style.left = "" + ((b.x-this.p1panel.offsetWidth)/2) + "px";
-			this.p1panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p1panel.offsetHeight/2) + "px";
-			//Panel
-			this.p2panel.style.left = "" + (b.x+b.width*b.unit+(b.x-this.p2panel.offsetWidth)/2) + "px";
-			this.p2panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p2panel.offsetHeight/2) + "px";
-			//console.log("Panel1: ["+this.p1panel.offsetWidth+","+this.p2panel.offsetHeight);
-			//console.log("Panel1: ["+this.p2panel.style.left+","+this.p2panel.style.top+"]");
-		}
+		this.positionControlPanels();
 
 		let b = this.board;
 		this.tiles = [];
@@ -180,6 +172,43 @@ class Pathogen {
 		this.p1timer = get_cell_timer();
 		this.p2timer = get_cell_timer();
 	}//constructor
+
+	calculateBoardBounds(){
+		let board_w = this.width/3;
+
+		let u = board_w / this.board.width;
+		this.board.unit = u;
+		//this.board.width = same
+		//this.board.height = same
+		this.board.x = this.width/3;
+		this.board.y = (this.height-this.board.height*this.board.unit)/2;
+		console.log("Board bounds");
+		console.log(this.board);
+		//this.board.y = (this.height-this.board.width*this.board.unit)/2;
+	} //calculateBoardBounds
+
+	positionControlPanels(){
+		if (this.useControlPanels){
+			let b = this.board;
+			this.p1panel.style.left = "" + ((b.x-this.p1panel.offsetWidth)/2) + "px";
+			this.p1panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p1panel.offsetHeight/2) + "px";
+			//Panel
+			this.p2panel.style.left = "" + (b.x+b.width*b.unit+(b.x-this.p2panel.offsetWidth)/2) + "px";
+			this.p2panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p2panel.offsetHeight/2) + "px";
+			//console.log("Panel1: ["+this.p1panel.offsetWidth+","+this.p2panel.offsetHeight);
+			//console.log("Panel1: ["+this.p2panel.style.left+","+this.p2panel.style.top+"]");
+		}
+	} //positionControlPanels
+
+	resize(){
+		this.width = this.canvas.width;
+		this.height = this.canvas.height;
+		console.log("hi");
+		console.log("New canvas size: {"+this.width+","+this.height+"}");
+		this.calculateBoardBounds();
+		this.positionControlPanels();
+		this.render();
+	}
 
 	updateScoreboard(){
 		this.scoreboard.p0 = 0;
