@@ -150,7 +150,7 @@
 						loadControlBoxImages);
 
 	function newGame(){
-		client.game = new Pathogen(22,18,canvas, atlases);
+		client.game = new Pathogen(client.cols, client.rows, canvas, atlases);
 		client.game.onwin = endgame;
 		client.game.render();
 
@@ -249,6 +249,8 @@
 		player.id = -1;
 		client.name = "";
 		client.connection = "offline";
+		client.cols = 15;
+		client.rows = 10;
 		newGame();
 	} //playOffline
 	
@@ -331,6 +333,8 @@
 		document.getElementById("gameID").innerHTML = obj.code;
 		//Store auth key for future server requests`
 		player.auth_key = obj.auth_key;
+		client.cols = obj.width;
+		client.rows = obj.height;
 		showView("wait");
 		setTimeout(checkGameFull(),5000);
 	} //processCreateGameResponse
@@ -341,6 +345,8 @@
 			console.log(obj);
 			player.id = 1;
 			player.auth_key = obj.auth_key;
+			client.cols = obj.width;
+			client.rows = obj.height;
 			document.title = "Pathogen: Blue";
 			playOnline();
 		} else {

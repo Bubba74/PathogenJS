@@ -9,10 +9,10 @@ var active = [];
 var lobby = [];
 
 class Game {
-	constructor(){
+	constructor(cols=15, rows=10){
 		this.p1 = '0';
 		this.p2 = '0';
-		this.game = new Pathogen(null);
+		this.game = new Pathogen(cols,rows);
 		this.turns = [];
 	}// constructor
 
@@ -47,7 +47,7 @@ class Game {
 } //Game
 
 function startGame(board){
-	board.game = new Game();
+	board.game = new Game(board.width, board.height);
 	board.game.p1 = board.p1;
 	board.game.p2 = board.p2;
 } //startGame
@@ -143,8 +143,8 @@ app.post('/new-game', function(req, resp){
 	let userKey = genUserKey();
 	lobby[lobby.length] = {game:null, code:key, p1:userKey, p2:-1, width:req.body.width, height:req.body.height};
 
-	//Send the game code back to the client
-	let obj = {code:key, auth_key:userKey};
+	//Send the game code back to the client    - Including the width/height of the board (in case this needs to be validated
+	let obj = {code:key, auth_key:userKey, width:req.body.width, height:req.body.height};
 	resp.send(JSON.stringify(obj));
 	resp.end();
 });// new-game
@@ -169,19 +169,24 @@ app.post('/join-game', function(req, resp){
 	let found = false;
 	let code = req.body.code.toUpperCase();
 	let userKey = genUserKey();
+	let size = {width:15, height:10};
 	for (let i=0; i<lobby.length; i++){
 		if (lobby[i].code == code){
 			found = true;
-			lobby[i].p2 = userKey;
-			startGame(lobby[i]);
-			active[active.length] = lobby[i];
-			lobby.splice(i,1);
-			break;
+			lobby[i].p2 = userKey;		//Store the connecting user's auth key in the game
+			startGame(lobby[i]);		//Create the new Pathogen board game instance
+			size.width = lobby[i].width;	//Return the width and height of the board
+			size.height = lobby[i].height;	//  to the connecting client.
+			active[active.length] = lobby[i]; //Move this game from the lobby (waiting on players) to active
+			lobby.splice(i,1);		//Remove this game from the lobby
+			break;	//Only add the connecting user to one game
 		}
 	}
 	let ret = {success: found};
 	if (found){
 		ret.auth_key = userKey;
+		ret.width = size.width;
+		ret.height = size.height;
 	} else {
 		ret.error = "Could not find game with id: "+code;
 	}
