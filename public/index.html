@@ -14,23 +14,26 @@
 
 	<label id="userlabel"></label>
 
-	<div id="start-window" class="menu">
-		<input type="button" id="start-host" value="Host Game" onclick="showView('host')">
-		<input type="button" id="start-join" value="Join Game" onclick="showView('join')">
-		<input type="button" id="start-local" value="Play Local" onclick="playOffline()">
+	<div id="menu-window" class="menu">
+		<input type="button" id="game-start" value="Start Game" onclick="showView('start')">
+		<input type="button" id="game-join" value="Join Game" onclick="showView('join')">
 	</div>
 
-	<div id="host-window" class="menu" style="display:none">
+	<div id="start-window" class="menu" style="display:none">
 		<iframe style="display:none" name="create_game_dummy" id="create_game_dummy"></iframe>
 		<form class="formdiv" action="/new-game" method="post" target="create_game_dummy" autocomplete="off" id="new-game-form">
 			<center>
 			Board Size: 
-			<input type="text" name="width" maxlength="2" size="2" value=22>
+			<input type="text" name="width" maxlength="2" size="2" value=22 data-type="num">
 			x
-			<input type="text" name="height" maxlength="2" size="2" value=18>
+			<input type="text" name="height" maxlength="2" size="2" value=18 data-type="num">
+			</br>
+			Number of players: <input type="text" name="size" size="1" value=2 data-type="num"> </br>
+			Game Name: <input type="text" name="name" size="10" value="Pathogen"> </br>
 			<!--<input type="submit" value="Send Invite" onclick="document.getElementById('new-game-form').reset()">--!>
-			<input type="submit" value="Send Invite">
 			</center>
+			<input type="submit" value="Host Online">
+			<input type="button" value="Play Offline" onclick="playOffline()">
 		</form>
 	</div>
 
@@ -112,12 +115,35 @@
 		views[view].style.display = "block";
 	};
 
+	//Reads widthxheight etc. from start-game form
+	//Currently:
+		// name: string
+		// size: integer (number of players allowed)
+		// width: integer (width of board)
+		// height: integer (height of board)
+	function getGameSpecs(){
+		let formHtml = document.getElementById("new-game-form");
+		var elements = formHtml.elements;
+    		var obj ={};
+    		for(var i = 0 ; i < elements.length ; i++){
+        		var item = elements.item(i);
+			if (item.type === "text"){
+				if (item.getAttribute('data-type') === "num")
+					obj[item.name] = parseFloat(item.value);
+				else
+        				obj[item.name] = item.value;
+			}
+    		}
+		console.log("New Game Settings!");
+		console.log(obj);
+		return obj;
+	}//getGameSpecs
 	
 	let client = {};
 
 	let views = {
+		menu: document.getElementById("menu-window"),
 		start: document.getElementById("start-window"),
-		host: document.getElementById("host-window"),
 		wait: document.getElementById("wait-window"),
 		join: document.getElementById("join-window"),
 		game: document.getElementById("game-window")
@@ -241,6 +267,7 @@
 	}
 
 	function playOffline(){
+		let gameSpecs = getGameSpecs();
 		//Fill+display username box
 		userlabel.innerHTML = "Local Game";
 		userlabel.style.display = "inline-block";
@@ -249,8 +276,8 @@
 		player.id = -1;
 		client.name = "";
 		client.connection = "offline";
-		client.cols = 15;
-		client.rows = 10;
+		client.cols = gameSpecs.width;
+		client.rows = gameSpecs.height;
 		newGame();
 	} //playOffline
 	
