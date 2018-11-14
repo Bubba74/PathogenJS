@@ -197,16 +197,31 @@
 			return response.json();
 		}).then ( function (body){
 			let turns = body.turns;
-			for (let i=0; i<turns.length; i++){
-				console.log("Processing turn: "+turns[i]);
-				while (client.game.busy);
-				client.game.click(turns[i].col, turns[i].row, turns[i].player, turns[i].type)
-				player.index += 1;
-				updateProgressBars();
-			}
-			setTimeout(getServerClicks, 400);
+			processServerClicks(turns);
 		});
 	}// update
+
+	function processServerClicks(turns){
+		//Done processing turns
+		if (turns.length === 0) {
+			//Queue server-clicks fetch
+			setTimeout(getServerClicks, 400);
+			return;
+		}
+
+		//Delay processing if game is currently animates
+		if (client.game.busy) setTimeout(processServerClicks, 10, turns);
+
+		//Process only the first turn
+		console.log("Processing turn 0 of "+(turns.length+1)+": "+turns[0]);
+		client.game.click(turns[0].col, turns[0].row, turns[0].player, turns[0].type)
+		player.index += 1;
+		updateProgressBars();
+
+		//Pass the remaining turns (spliced off the first)
+		turns.splice(0,1);
+		setTimeout(processServerClicks, 10, turns);
+	} //processServerClicks
 
 	function sendClick(col, row, type){
 		let click = {auth_key: player.auth_key, col: col, row: row, type: type};

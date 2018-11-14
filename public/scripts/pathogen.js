@@ -515,6 +515,7 @@ class Pathogen {
 			if (!this.canvas) obj.processWaves(obj);
 			else setTimeout(obj.processWaves, obj.animation_delay, obj);
 		} else {
+			console.log("Finished processing click");
 			obj.turn = 1 - obj.turn;
 			obj.busy = false;
 			obj.render(false);
