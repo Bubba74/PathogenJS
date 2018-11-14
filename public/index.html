@@ -17,7 +17,15 @@
 	<div id="start-window" class="menu">
 		<input type="button" id="start-host" value="Host Game" onclick="showView('host')">
 		<input type="button" id="start-join" value="Join Game" onclick="showView('join')">
-		<input type="button" id="start-local" value="Play Local" onclick="playOffline()">
+		<input type="button" id="start-local" style="display:none" onclick="playOffline()">
+		<label for="start-local"><center>
+			<span>
+			Play Local
+			<input type="text" value="15" maxlength="2" style="width:20px"></input>
+			x
+			<input type="text" value="10" maxlength="2" style="width:20px"></input></center>
+			</span>
+		</label>
 	</div>
 
 	<div id="host-window" class="menu" style="display:none">
