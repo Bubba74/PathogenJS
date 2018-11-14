@@ -108,39 +108,19 @@ body {
 	width: calc(100% - 40px); 
 }
 
-.menu > input , .menu > label{
+.menu > input {
 	font-size: 25px;
 	width: 100%;
 	margin: 10px;
 	margin-left: 0px;
 }
-.menu > label {
-	display: block;
-	width: calc(100% - 10px);
-  	padding: 4px;
-  	/*border-top: 1px solid #CCCCCC;*/
-  	border-right: 1px solid #333333;
-  	border-bottom: 4px solid #333333;
-  	/*border-left: 1px solid #CCCCCC;*/
-}
 
-.menu > input[type="button"] , .menu > label {
+.menu > input[type="button"] {
 	background: blueviolet;
 	border-radius: 5px;
 	color: white;
 	border-color: blueviolet;
 }
-
-.menu > label > center > input {
-	width: 20px;
-
-	position: relative;
-	top: 50%;
-	left: 0%;
-	margin-left: -10px;
-	margin-top: -15px;
-}
-	
 
 #userlabel {
 	display: none;
