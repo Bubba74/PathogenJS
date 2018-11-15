@@ -103,9 +103,16 @@ body {
 */
 
 .formdiv {
-	padding: 20px;
 	display: inline-block;
 	width: calc(100% - 40px); 
+}
+
+td {
+	padding:8px;
+}
+
+tr{
+	border-bottom: 1px solid purple;
 }
 
 .menu > input {

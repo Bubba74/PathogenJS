@@ -22,18 +22,33 @@
 	<div id="start-window" class="menu" style="display:none">
 		<iframe style="display:none" name="create_game_dummy" id="create_game_dummy"></iframe>
 		<form class="formdiv" action="/new-game" method="post" target="create_game_dummy" autocomplete="off" id="new-game-form">
-			<center>
-			Board Size: 
-			<input type="text" name="width" maxlength="2" size="2" value=22 data-type="num">
-			x
-			<input type="text" name="height" maxlength="2" size="2" value=18 data-type="num">
-			</br>
-			Number of players: <input type="text" name="size" size="1" value=2 data-type="num"> </br>
-			Game Name: <input type="text" name="name" size="10" value="Pathogen"> </br>
-			<!--<input type="submit" value="Send Invite" onclick="document.getElementById('new-game-form').reset()">--!>
-			</center>
-			<input type="submit" value="Host Online">
-			<input type="button" value="Play Offline" onclick="playOffline()">
+			<center><table style="color: purple; border-collapse: collapse;">
+                		<tr>
+                    			<td>Board Size</td> 
+                    			<td> <span style="white-space: nowrap">
+    						<input type="text" name="width" maxlength="2" size="2" value="22" data-type="num">
+						x
+    						<input type="text" name="height" maxlength="2" size="2" value="18" data-type="num"></span>
+					</td>
+                		</tr>
+                		<tr>
+                    			<td>Number of players</td>
+                    			<td style="white-space: nowrap">
+    						<label>1<input type="radio" name="size" value="1"></label>
+    						<label>2<input type="radio" name="size" value="2"></label>
+    						<label>3<input type="radio" name="size" value="3"></label>
+					</td>
+                		</tr>
+                		<tr>
+                    			<td>Game Name</td>
+                    			<td><input type="text" name="name" size="10" value="Pathogen"></td>
+        			</tr>
+
+    				<tr>
+                			<td><center><input type="submit" value="Host Online"></center></td>
+                			<td><center><input type="button" value="Play Offline" onclick="playOffline()"></center></td>
+                    		</tr>
+    			</table></center>
 		</form>
 	</div>
 
