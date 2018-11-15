@@ -304,11 +304,12 @@
 	} //playOnline
 
 	function endgame(stats){
-		let text = "The game was won by ";
+		let text = "<center><span style='color: green; font-size: 10vh; margin-top: 45%;'>The game was won by ";
 		if (stats.player == "red") text += "Red";
 		else if (stats.player == "blue") text += "Blue";
 		else text = "The game was a tie";
 		text += "! in a "+stats.type+" victory!";
+		text += "</span></center>"
 		console.log("Game ended!   "+text);
 		
 		label = '<label style="background: black; color: white;">'+text+'</label>';
