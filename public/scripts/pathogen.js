@@ -206,7 +206,7 @@ class Pathogen {
 		this.waves_buf = [];
 		this.busy = false;
 		this.animation_delay = 300;
-		this.gifDur = 14*200;
+		this.gifDur = 14*20;
 
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
@@ -636,7 +636,7 @@ class Pathogen {
 			console.log({col:col, row:row, ESWN:ESWN});
 		}
 		if (animating)
-			setTimeout(obj.updateWaves, obj.gifDur, obj);
+			setTimeout(obj.updateWaves, obj.gifDur/2, obj);
 		else
 			obj.updateWaves(obj);
 	} //processWaves
