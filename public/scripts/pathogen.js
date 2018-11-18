@@ -293,7 +293,8 @@ class Pathogen {
 	}//setStaticTileImage
 
 	animate(img, animation, callback, animationDur=14, i=0){
-		if (i >= animationDur) {
+		let animations = true;
+		if (i >= animationDur || !animations) {
 			callback();
 			return;
 		}
