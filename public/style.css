@@ -19,12 +19,14 @@ body {
 }
 
 .pathogen-window {
-	border: 0px solid #FF0000;
+	outline: 4px solid #FF0000;
 	background: #00000000;
 
 	position: absolute;
-	left: 0px;
-	top: 0px;
+	left: calc(50% - 25vmin);
+	top:  calc(50% - 25vmin);
+	width: 50vmin;
+	height: 50vmin;
 }
 
 #scoreboard {
@@ -47,12 +49,22 @@ body {
 
 	background: white;
 }
-	
+
 
 .cell-controls {
 	position: absolute;
 	top: 200;
 	padding: 0px;
+}
+#p1-controls {
+	--canvasLeft: calc(50% - 25vmin);
+	--controlWidth: 145px;
+	left: calc((var(--canvasLeft) - var(--controlWidth)) / 2);
+}
+#p2-controls {
+	--canvasLeft: calc(50% - 25vmin);
+	--controlWidth: 145px;
+	left: calc((50% + 25vmin) + ((var(--canvasLeft) - var(--controlWidth)) / 2));
 }
 .cell-controls > div {
 	width: 100%;
@@ -66,7 +78,6 @@ body {
 .cell-controls > div > label > input + img {
   	cursor: pointer;
 	height: 100%;
-	image-rendering: pixelated;
 }
 .cell-controls > div > label > input:checked + img {
 	background: #8A2BE288;

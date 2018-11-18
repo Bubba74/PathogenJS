@@ -70,7 +70,9 @@
 	</div> <!-- Lobby Screen --!>
 
 	<div id="game-window" style="display: none;">
-		<canvas id="game-canvas" class="pathogen-window"></canvas>
+		<div id="scoreboard"></div>
+
+		<div id="game-canvas" class="pathogen-window"></div>
 	
 		<div id="p1-controls" class="cell-controls" style="width:145px; height:480px;">
 			<div> <label> <input type="radio" name="p1-radio" id="r1a" value=1 checked> <img id="Red_Stage01"> </label> <img src=""><img src=""> </div>
@@ -165,22 +167,11 @@
 	};
 
 
-	/*
-	username = document.getElementById("username");
-	username.value = newUsername();
-	username.addEventListener("keydown", function(event){
-		if (event.keyCode == 13){
-			connect();
-			console.log("Joining game");
-		}
-	});
-	*/
-
 	level_input = document.getElementById("level");
 
 	canvas = document.getElementById("game-canvas")
-	canvas.width = document.body.clientWidth;
-	canvas.height = document.body.clientHeight;
+		//canvas.width = document.body.clientWidth/3;
+		//canvas.height = document.body.clientHeight/3;
 
 	player = {auth_key: -1, id:-1, index:0};
 
@@ -253,10 +244,13 @@
 	canvas.addEventListener("click", function(event){
 		let mx = event.pageX;
 		let my = event.pageY;
-		mx -= client.game.board.x;
-		my -= client.game.board.y;
-		mx = Math.floor(mx/client.game.board.unit);
-		my = Math.floor(my/client.game.board.unit);
+		console.log("Clicked coord: ["+mx+","+my+"]");
+		mx -= canvas.offsetLeft;
+		my -= canvas.offsetTop;
+		console.log("Clicked coord rel to board: ["+mx+","+my+"]");
+		mx = Math.floor(mx/client.game.getGameUnitW());
+		my = Math.floor(my/client.game.getGameUnitH());
+		console.log("Clicked box: ["+mx+","+my+"]");
 
 
 		let playerId = client.game.turn+1;
@@ -420,6 +414,7 @@
 	};
 	
 
+/*
 	function resizeCanvas(){
 		if (document.body.clientWidth == canvas.width &&
 		    document.body.clientHeight == canvas.height)
@@ -431,6 +426,7 @@
 			client.game.resize();
 	}
 	setInterval(resizeCanvas, 500);
+*/
 	/*
 	let resize_timer = undefined;
 	window.addEventListener("resize", function(){

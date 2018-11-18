@@ -87,7 +87,46 @@ function draw_tile_image(atlases, ctx, left, top, w, owner, level){
 	ctx.imageSmoothingEnabled = true;
 	ctx.drawImage(tex.img, 0,0,tex.frame.width,tex.frame.height, left+0.10*w,top+0.10*w,w*.8,w*.8);
 }
+
+function set_tile_image(atlases, img, textureName, w, h){
+	if (textureName == ""){
+		img.width = w;
+		img.height = h;
+		img.style.marginLeft = -w/2;
+		img.style.marginTop = -h/2;
+		img.style.transformOrigin = "50% 50%";
+		img.style.transform = "rotate(0deg)";
+		img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAB/UlEQVR4Xu3dwREBARQEUZuDkGQgB0HJQQZCEoSru1dlqrS7Ntu9/+w49ZkycEytacypIGMvQUEKMmZgbE4XUpAxA2NzupCCjBkYm9OFFGTMwNicLqQgYwbG5nQhBRkzMDanCynImIGxOeRC7tfXZey5fjLn9jg/v/3hgnxr8OP7BYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkFgTIFqiDCImQUBMoUqIIIi5BREChToAoiLEJGQaBMgSqIsAgZBYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkFgTIFqiDCImQUBMoUqIIIi5BREChToAoiLEJGQaBMgSqIsAgZBYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkzQeAz/T2K/MPO31uEAgoCZQpUQYRFyCgIlClQBREWIaMgUKZAFURYhIyCQJkCVRBhETIKAmUKVEGERcgoCJQpUAURFiGjIFCmQBVEWISMgkCZAvUGdsAIdKQI8pwAAAAASUVORK5CYII=";
+		return;
+	}
+	let tx = atlases.getImageAndFrame(textureName);
+	//Set dimensions of image
+	if (tx == undefined) {
+		console.log("Texture {"+textureName+"} not found in atlases");
+	}
+	img.width = tx.frame.width / 100 * w;
+	img.height = tx.frame.height / 100 * h;
+	//Move image to proper location
+	let fw = tx.frame.frameWidth;	if (fw == undefined) fw = tx.frame.width;
+	let fh = tx.frame.frameHeight;	if (fh == undefined) fh = tx.frame.height;
+	let fx = tx.frame.frameX;	if (fx == undefined) fx = 0;
+	let fy = tx.frame.frameY;	if (fy == undefined) fy = 0;
+	//If the subtexture has frameX, frameY, frameWidth, and frameHeight, use those values
 	
+	img.style.marginLeft = (-fw/2 - fx) / 100 * w;
+	img.style.marginTop  = (-fh/2 - fy) / 100 * h;
+    	img.style.transformOrigin = ""+( (fw/2-(-fx)) / 100 * w )+"px "+( (fh/2-(-fy)) / 100 * h )+"px";
+	img.src = tx.img.src;
+} //set_tile_to_img
+
+function get_static_texture (owner, type){
+	if (owner < 0) return "";
+
+	let colors = ["Red", "Blue", "Green", "Yellow"];
+
+	return colors[owner] + "_Stage0" + type;
+} //get_static_texture
+
 
 function get_cell_timer(){
 	let timer = {};
@@ -112,40 +151,43 @@ class Pathogen {
 	constructor (cols, rows, canvas, atlases){
 		this.atlases = atlases;
 		if (canvas){
-			this.width = canvas.width;
-			this.height = canvas.height;
-	
 			this.canvas = canvas;
-			this.screen = canvas.getContext("2d");
-
-			this.p1panel = document.getElementById("p1-controls");
-			this.p2panel = document.getElementById("p2-controls");
-			//console.log("p1panel");
-			//console.log(this.p1panel);
-
-			this.useControlPanels = !(this.p1panel == null || this.p2panel == null);
 		}
 
-		let u=60;
 		this.board = {
 			width: cols,
-			height: rows,
-			unit: u,
-			x: null,
-			y: null
+			height: rows
 		};
-		this.calculateBoardBounds();
-
-		//Position control panels
-		this.positionControlPanels();
 
 		let b = this.board;
 		this.tiles = [];
-		for (let i=0; i<b.width; i++){
-			let col = [];
-			for (let j=0; j<b.height; j++)
-				col[col.length] = new_tile();
-			this.tiles[this.tiles.length] = col;
+		for (let r=0; r<b.height; r++){
+			let row = [];
+			for (let c=0; c<b.width; c++)
+				row[row.length] = new_tile(c,r);
+			this.tiles[this.tiles.length] = row;
+		}
+
+		if (this.canvas){
+			this.tileImgs = [];
+			for (let r=0; r<b.height; r++){
+				let row = [];
+				this.tileImgs[this.tileImgs.length] = row;
+				for (let c=0; c<b.width; c++){
+					let img = document.createElement("img");
+					img.style.position = "absolute";
+					img.style.left = (100* (c+0.5) / b.width) + "%";
+					img.style.top  = (100* (r+0.5) / b.height) + "%";
+					//img.style.width = (100/b.width)+"%";
+					//img.style.height = (100/b.height)+"%";
+					//img.style.marginLeft = (-100/b.width/2)+"%";
+					//img.style.marginTop  = (-100/b.height/2)+"%";
+					//img.style.border = "1px white solid";
+					this.canvas.appendChild(img);
+					row[row.length] = img;
+					this.setStaticTileImage(c,r);
+				}
+			}
 		}
 
 		this.scoreboard = {
@@ -163,7 +205,8 @@ class Pathogen {
 		this.waves = [];
 		this.waves_buf = [];
 		this.busy = false;
-		this.animation_delay = 100;
+		this.animation_delay = 300;
+		this.gifDur = 14*200;
 
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
@@ -173,42 +216,14 @@ class Pathogen {
 		this.p2timer = get_cell_timer();
 	}//constructor
 
-	calculateBoardBounds(){
-		let board_w = this.width/3;
-
-		let u = board_w / this.board.width;
-		this.board.unit = u;
-		//this.board.width = same
-		//this.board.height = same
-		this.board.x = this.width/3;
-		this.board.y = (this.height-this.board.height*this.board.unit)/2;
-		console.log("Board bounds");
-		console.log(this.board);
-		//this.board.y = (this.height-this.board.width*this.board.unit)/2;
-	} //calculateBoardBounds
-
-	positionControlPanels(){
-		if (this.useControlPanels){
-			let b = this.board;
-			this.p1panel.style.left = "" + ((b.x-this.p1panel.offsetWidth)/2) + "px";
-			this.p1panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p1panel.offsetHeight/2) + "px";
-			//Panel
-			this.p2panel.style.left = "" + (b.x+b.width*b.unit+(b.x-this.p2panel.offsetWidth)/2) + "px";
-			this.p2panel.style.top  = "" + (b.y + (b.unit*b.height)/2 - this.p2panel.offsetHeight/2) + "px";
-			//console.log("Panel1: ["+this.p1panel.offsetWidth+","+this.p2panel.offsetHeight);
-			//console.log("Panel1: ["+this.p2panel.style.left+","+this.p2panel.style.top+"]");
-		}
-	} //positionControlPanels
-
-	resize(){
-		this.width = this.canvas.width;
-		this.height = this.canvas.height;
-		console.log("hi");
-		console.log("New canvas size: {"+this.width+","+this.height+"}");
-		this.calculateBoardBounds();
-		this.positionControlPanels();
-		this.render();
-	}
+	getGameUnitW() {
+		//console.log("Calculating game unit size: " + this.canvas.offsetWidth+"/"+this.board.width+" == "+(this.canvas.offsetWidth/this.board.width) );
+		return this.canvas.offsetWidth/this.board.width;
+	} //getGameUnit
+	getGameUnitH() {
+		//console.log("Calculating game unit size: " + this.canvas.offsetWidth+"/"+this.board.width+" == "+(this.canvas.offsetWidth/this.board.width) );
+		return this.canvas.offsetHeight/this.board.height;
+	} //getGameUnit
 
 	updateScoreboard(){
 		this.scoreboard.p0 = 0;
@@ -217,16 +232,16 @@ class Pathogen {
 		this.scoreboard.p1_solid = 0;
 		this.scoreboard.empty = this.scoreboard.total;
 		let b = this.board;
-		for (let i=0; i<b.width; i++)
-			for (let j=0; j<b.height; j++)
-				if (this.tiles[i][j].owner == 0){
-					if (this.tiles[i][j].type == 4)
+		for (let r=0; r<b.height; r++)
+			for (let c=0; c<b.width; c++)
+				if (this.tiles[r][c].owner == 0){
+					if (this.tiles[r][c].type == 4)
 						this.scoreboard.p0_solid++;
 					else
 						this.scoreboard.p0++;
 					this.scoreboard.empty--;
-				} else if (this.tiles[i][j].owner == 1) {
-					if (this.tiles[i][j].type == 4)
+				} else if (this.tiles[r][c].owner == 1) {
+					if (this.tiles[r][c].type == 4)
 						this.scoreboard.p1_solid++;
 					else
 						this.scoreboard.p1++;
@@ -266,15 +281,103 @@ class Pathogen {
 	}//checkVictory
 
 	resetModifiers(){
-		for (let i=0; i<this.board.width; i++)
-			for (let j=0; j<this.board.height; j++)
-				this.tiles[i][j].modified = 0;
+		for (let r=0; r<this.board.height; r++)
+			for (let c=0; c<this.board.width; c++)
+				this.tiles[r][c].modified = 0;
 	}//resetModifiers
+
+	setStaticTileImage(col, row){
+		let tile = this.tiles[row][col];
+		this.tileImgs[row][col].style.transform = "rotate(0deg)";
+		set_tile_image(this.atlases, this.tileImgs[row][col], get_static_texture(tile.owner, tile.type), this.getGameUnitW(), this.getGameUnitH());
+	}//setStaticTileImage
+
+	animate(img, animation, callback, animationDur=14, i=0){
+		if (i >= animationDur) {
+			callback();
+			return;
+		}
+
+		let tx = animation + "_0" + (i<10?"0":"") + i;
+		set_tile_image(this.atlases, img, tx, this.getGameUnitW(), this.getGameUnitH());
+
+		let self = this;
+		setTimeout(function (){self.animate(img, animation, animationDur, callback, i+2);}, this.gifDur/animationDur);
+	} //animate
+		
+	animateEvolve(col, row){
+		let colors = ["Red", "Blue", "Green", "Yellow"];
+
+		let tile  = this.tiles[row][col];
+		let owner = tile.owner;
+		let type  = tile.type;
+
+		if (type == 1){
+			this.setStaticTileImage(col, row);
+			return;
+		}
+
+		let txName = colors[owner]+"_Evolution_"+(type-1)+"To"+type;
+
+		//console.log("Evolving cell with base: " + txName);
+		let self = this;
+		this.animate(this.tileImgs[row][col], txName, function(){self.setStaticTileImage(col, row);});
+	} //animateEvolve
+
+	animateDestruct(col, row, type, owner){
+		let colors = ["Red", "Blue", "Green", "Yellow"];
+
+		let tile  = this.tiles[row][col];
+
+		let txName = colors[owner]+"_Destruction_Stage"+type;
+
+		//console.log("Destroying cell with animation string: " + txName);
+		let self = this;
+		this.animate(this.tileImgs[row][col], txName, function(){self.setStaticTileImage(col, row);}, 10);
+	} //animateDestruct
+
+	animateSplit(col, row, ESWN){
+		let colors = ["Red", "Blue", "Green", "Yellow"];
+
+		let owner = this.tiles[row][col].owner;
+		let type  = this.tiles[row][col].type-1;
+
+		let count = 0; for (let i=0; i<ESWN.length; i++) if (ESWN[i]) count++;
+
+		let rotation = 0; let txName = "";
+		if (count == 4)
+			txName = colors[owner]+"_Division4_Stage"+type;
+		else if (count == 3){
+			let i = 0; while (ESWN[i]) i++;
+			rotation = 90 * (i+1);
+			txName = colors[owner]+"_Division3_Stage"+type;
+		} else if (count == 2){
+			if ( (ESWN[0] && ESWN[2]) || (ESWN[1] && ESWN[3]) ){
+				rotation = 90 - (ESWN[0] ? 90 : 0);
+				txName = colors[owner]+"_Division2_Across_Stage"+type;
+			} else {
+				let i = 0; while ( !(ESWN[i] && ESWN[(i+3)%4]) ) i++;
+				rotation = 90 * (i-1);
+				txName = colors[owner]+"_Division2_Stage"+type;
+			}
+		} else if (count == 1){
+			let i = 0; while (!ESWN[i]) i++;
+			rotation = 90 * i;
+			txName = colors[owner]+"_Division1_Stage"+type;
+		} else {
+			return;
+		}
+
+		this.tileImgs[row][col].style.transform = "rotate("+rotation+"deg)";
+		let self = this;
+		this.animate(this.tileImgs[row][col], txName, function(){self.setStaticTileImage(col, row);});
+		
+	} //animateSplit
 
 	//override -- in the instance of a click, the cell should be
 	//	overridden to C-level, afterwards, don't override
 	upgradeCell(col, row, owner, waveLevel, override){
-		let tile = this.tiles[col][row];
+		let tile = this.tiles[row][col];
 
 
 		//i.e. if it's a B-level upgrade, C-cells ignore the change
@@ -286,7 +389,8 @@ class Pathogen {
 		//		TODO -- there might be ambiguity if two waves approach at different times
 		let spreadWave = true;
 		let newWaveLevel;
-		//Special case for C-level wave
+
+		//Special case for Virus spread
 		if (waveLevel >= 4){
 			//Store the first tile's type in the waveLevel variable
 			if (override) {
@@ -294,10 +398,14 @@ class Pathogen {
 			} else newWaveLevel = waveLevel;
 			//If the types match, delete the tile and output a pulse of the same level
 			if (tile.type == newWaveLevel%10){
+				let old_type = tile.type;
+				let old_owner = tile.owner;
 				tile.owner = -1;
 				tile.type = 0;
 				tile.modified = 1;
+				this.animateDestruct(col, row, old_type, old_owner);
 			} else spreadWave = false;
+		//Special case for C-level wave
 		} else if (waveLevel == 3){
 			//Upgrade connected C-cells to walls
 			if (tile.type == waveLevel){
@@ -305,6 +413,7 @@ class Pathogen {
 				newWaveLevel = waveLevel;
 				tile.owner = owner;
 				tile.modified = 1;
+				this.animateEvolve(col, row);
 			//If the c-cell was placed directly on the board,
 			//  turn the cell to a C-cell and emit a B-wave
 			} else if (override){
@@ -312,6 +421,7 @@ class Pathogen {
 				newWaveLevel = waveLevel-1;
 				tile.owner = owner;
 				tile.modified = 1;
+				this.animateEvolve(col, row);
 			//If the c-wave was spread from another c-cell,
 			//  do nothing
 			} else {
@@ -330,12 +440,16 @@ class Pathogen {
 			}
 			tile.owner = owner;
 			tile.modified = 1;
+			this.animateEvolve(col, row);
 		}
 
 		if (override)
 			this.render(false);
-		if (spreadWave)
-			this.upgradeAdjacent(col, row, owner, newWaveLevel);
+
+		if (spreadWave){
+			let self = this;
+			self.upgradeAdjacent(col, row, owner, newWaveLevel);
+		}
 	}//upgradeCell
 
 	upgradeAdjacent(col, row, owner, waveLevel){
@@ -350,14 +464,17 @@ class Pathogen {
 		//    />0-v
 		//    3   1
 		//    ^-2</
-		let deltaX = [0,1,0,-1], deltaY = [-1,0,1,0];
+		let ESWN = [false, false, false, false];
+		let deltaX = [1,0,-1,0], deltaY = [0,1,0,-1];
 		for (let i=0; i<4; i++){
 			let x = col + deltaX[i];
 			let y = row + deltaY[i];
 			//If the adjacent cell is within bounds, post a new wave spot
 			if (x < 0 || x >= w || y < 0 || y >= h);
-			else
-				this.waves[this.waves.length] = {x:x, y:y, level:waveLevel, owner:owner};
+			else {
+				if (this.tiles[y][x].type <= waveLevel) ESWN[i] = true;
+				this.waves[this.waves.length] = {x:x, y:y, level:waveLevel, owner:owner, src_col:col, src_row:row, src_eswn:ESWN};
+			}
 		}
 	}//upgradeAdjacent
 
@@ -368,13 +485,14 @@ class Pathogen {
 			this.clickError = "It's not your turn!";
 			return false;
 		}
-		if (col < 0 || col >= this.tiles.length || row < 0 || row >= this.tiles[0].length) {
+		if (row < 0 || row >= this.tiles.length || col < 0 || col >= this.tiles[0].length) {
 			this.clickError = "Click is out of bounds";
 			return false;
 		}
 
-		let old_owner = this.tiles[col][row].owner;
-		let old_type  = this.tiles[col][row].type;
+		console.log("Clicking at ["+col+","+row+"]");
+		let old_owner = this.tiles[row][col].owner;
+		let old_type  = this.tiles[row][col].type;
 
 		//Special return case for Virus placement
 		if (type == 4){
@@ -459,7 +577,7 @@ class Pathogen {
 
 	click (col, row, new_owner, type) {
 		if (this.busy) return false;
-		this.busy = true;
+		//this.busy = true;
 
 		if (type < 1) type = 1;
 		if (type > 4) type = 4;
@@ -491,12 +609,39 @@ class Pathogen {
 		if (!this.canvas){
 			this.processWaves(this);
 		} else {
-			setTimeout(this.processWaves, this.animation_delay, this);
+			let self = this;
+			setTimeout(this.processWaves, this.gifDur, this);
 		}
 		return true;
 	}//click
 
 	processWaves(obj){
+		//Render animations
+		console.log("Processing waves");
+		console.log(obj.waves);
+		let pcol = -1; let prow = -1;
+		let animating = false;
+		for (let i=0; i<obj.waves.length; i++){
+			console.log(obj.waves[i]);
+			let wave = obj.waves[i];
+			let col = wave.src_col;
+			let row = wave.src_row;
+			let ESWN = wave.src_eswn;
+				
+			if (obj.tiles[row][col].owner >= 0 && obj.tiles[row][col].type != 4 && col != pcol && row != prow){
+				animating = true;
+				obj.animateSplit(col, row, ESWN);
+			}
+			pcol = col; prow = row;
+			console.log({col:col, row:row, ESWN:ESWN});
+		}
+		if (animating)
+			setTimeout(obj.updateWaves, obj.gifDur, obj);
+		else
+			obj.updateWaves(obj);
+	} //processWaves
+
+	updateWaves(obj){
 		//Swap waves and waves_buf arrays
 		let temp = obj.waves;
 		obj.waves = obj.waves_buf;
@@ -513,7 +658,7 @@ class Pathogen {
 		if (obj.waves.length){
 			obj.render(false);
 			if (!this.canvas) obj.processWaves(obj);
-			else setTimeout(obj.processWaves, obj.animation_delay, obj);
+			else setTimeout(obj.processWaves, obj.gifDur, obj);
 		} else {
 			console.log("Finished processing click");
 			obj.turn = 1 - obj.turn;
@@ -521,23 +666,31 @@ class Pathogen {
 			obj.render(false);
 			obj.checkVictory();
 		}
-	}//click
+	}// updateWaves
 
 
 	render (clear=true) {
 		if (!this.canvas) return;
-		if (clear)
-			this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
+		//if (clear)
+			//this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
+		
 
 		this.renderBorder();
-		this.renderScoreboard();
+		//this.renderScoreboard();
 		
+		return;
+
 		let b = this.board;
-		for (let i=0; i<b.width; i++)
-			for (let j=0; j<b.height; j++){
-				let t = this.tiles[i][j];
+		for (let r=0; r<b.height; r++)
+			for (let c=0; c<b.width; c++){
+				let t = this.tiles[r][c];
+				let img = this.tileImgs[r][c];
 				//After the initial 'clear' stage, skip the tiles that have not changed
 				if (!clear && !t.modified) continue;
+
+				set_tile_image(this.atlases, t, img);
+				continue;
+				
 				//Get coordinates
 				let left = b.x+i*b.unit,
 				    top  = b.y+j*b.unit;
@@ -551,9 +704,15 @@ class Pathogen {
 
 	renderBorder (){
 		let colors = ["#953355", "#51739e"];
-		this.screen.fillStyle = colors[this.turn];
+
+		//Just change the outline of the div element
+		this.canvas.style.outlineColor = colors[this.turn];
+		return;
+
+		//Context of canvas
 		let b = this.board;
 		let ctx = this.screen;
+		this.screen.fillStyle = colors[this.turn];
 
 		//Top bar
 		ctx.fillRect(b.x-5, b.y-5, b.width*b.unit+10, 5);
