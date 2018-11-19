@@ -40,7 +40,6 @@ class TextureAtlas {
 	} //loadXmlDoc
 
 	__loadImage (){
-		let tex = this;
 		this.atlas = this.xmlDoc.getElementsByTagName("TextureAtlas")[0];
 		this.subs = this.atlas.getElementsByTagName("SubTexture");
 
@@ -48,15 +47,16 @@ class TextureAtlas {
 		console.log("Loading Image: "+this.src.url);
 		this.src.image = document.createElement("img");
 
+		let self = this;
 		this.src.image.onload = function(){
-			tex.src.canvas = document.createElement("canvas");
-			tex.src.canvas.width  = this.width;
-			tex.src.canvas.height = this.height;
-			console.log(tex.src.canvas);
-			tex.src.context = tex.src.canvas.getContext('2d');
-			tex.src.context.drawImage(this, 0, 0, this.width, this.height);
+			self.src.canvas = document.createElement("canvas");
+			self.src.canvas.width  = this.width;
+			self.src.canvas.height = this.height;
+			console.log(self.src.canvas);
+			self.src.context = self.src.canvas.getContext('2d');
+			self.src.context.drawImage(this, 0, 0, this.width, this.height);
 			console.log("Done loading");
-			if (tex.onload) tex.onload();
+			if (self.onload) self.onload();
 		};
 		
 		this.src.image.src = this.src.url;
@@ -70,6 +70,7 @@ class TextureAtlas {
 	} //loadAttribs
 
 	getImageAndFrame (name){
+		//Return cached image
 		if (this.images.hasOwnProperty(name))
 			return this.images[name];
 
@@ -91,6 +92,7 @@ class TextureAtlas {
 		//Create a new image and add the sub texture's source to it
 		this.images[name] = {};
 		this.images[name].img = document.createElement("img");
+		
 		this.images[name].img.src = this.buffer.canvas.toDataURL();
 		this.images[name].frame = {};
 		TextureAtlas.loadAttribs(sub, this.images[name].frame, ["x", "y", "width", "height"]);
