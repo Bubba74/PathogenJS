@@ -293,6 +293,7 @@ class Pathogen {
 	}//setStaticTileImage
 
 	animate(img, animation, callback, animationDur=14, i=0){
+		let speed = 1;
 		let animations = true;
 		if (i >= animationDur || !animations) {
 			callback();
@@ -303,7 +304,7 @@ class Pathogen {
 		set_tile_image(this.atlases, img, tx, this.getGameUnitW(), this.getGameUnitH());
 
 		let self = this;
-		setTimeout(function (){self.animate(img, animation, animationDur, callback, i+2);}, this.gifDur/animationDur);
+		setTimeout(function (){self.animate(img, animation, animationDur, callback, i+speed);}, speed*this.gifDur/animationDur);
 	} //animate
 		
 	animateEvolve(col, row){
