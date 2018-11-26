@@ -90,13 +90,15 @@ function draw_tile_image(atlases, ctx, left, top, w, owner, level){
 
 function set_tile_image(atlases, img, textureName, w, h){
 	if (textureName == ""){
-		img.width = w;
-		img.height = h;
-		img.style.marginLeft = -w/2;
-		img.style.marginTop = -h/2;
-		img.style.transformOrigin = "50% 50%";
-		img.style.transform = "rotate(0deg)";
-		img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAB/UlEQVR4Xu3dwREBARQEUZuDkGQgB0HJQQZCEoSru1dlqrS7Ntu9/+w49ZkycEytacypIGMvQUEKMmZgbE4XUpAxA2NzupCCjBkYm9OFFGTMwNicLqQgYwbG5nQhBRkzMDanCynImIGxOeRC7tfXZey5fjLn9jg/v/3hgnxr8OP7BYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkFgTIFqiDCImQUBMoUqIIIi5BREChToAoiLEJGQaBMgSqIsAgZBYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkFgTIFqiDCImQUBMoUqIIIi5BREChToAoiLEJGQaBMgSqIsAgZBYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkzQeAz/T2K/MPO31uEAgoCZQpUQYRFyCgIlClQBREWIaMgUKZAFURYhIyCQJkCVRBhETIKAmUKVEGERcgoCJQpUAURFiGjIFCmQBVEWISMgkCZAvUGdsAIdKQI8pwAAAAASUVORK5CYII=";
+		//img.width = w;
+		//img.height = h;
+		//img.style.marginLeft = -w/2;
+		//img.style.marginTop = -h/2;
+		//img.style.transformOrigin = "50% 50%";
+		//img.style.transform = "rotate(0deg)";
+		img.style.backgroundImage = "url("+"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAB/UlEQVR4Xu3dwREBARQEUZuDkGQgB0HJQQZCEoSru1dlqrS7Ntu9/+w49ZkycEytacypIGMvQUEKMmZgbE4XUpAxA2NzupCCjBkYm9OFFGTMwNicLqQgYwbG5nQhBRkzMDanCynImIGxOeRC7tfXZey5fjLn9jg/v/3hgnxr8OP7BYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkFgTIFqiDCImQUBMoUqIIIi5BREChToAoiLEJGQaBMgSqIsAgZBYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkFgTIFqiDCImQUBMoUqIIIi5BREChToAoiLEJGQaBMgSqIsAgZBYEyBaogwiJkFATKFKiCCIuQURAoU6AKIixCRkGgTIEqiLAIGQWBMgWqIMIiZBQEyhSoggiLkFEQKFOgCiIsQkZBoEyBKoiwCBkzQeAz/T2K/MPO31uEAgoCZQpUQYRFyCgIlClQBREWIaMgUKZAFURYhIyCQJkCVRBhETIKAmUKVEGERcgoCJQpUAURFiGjIFCmQBVEWISMgkCZAvUGdsAIdKQI8pwAAAAASUVORK5CYII="+")";
+		img.style.backgroundSize = ""+w+"px "+h+"px";
+		img.style.backgroundPosition = (img.offsetWidth/2-w/2)+"px "+(img.offsetHeight/2-h/2)+"px";
 		return;
 	}
 	let tx = atlases.getImageAndFrame(textureName);
@@ -104,8 +106,9 @@ function set_tile_image(atlases, img, textureName, w, h){
 	if (tx == undefined) {
 		console.log("Texture {"+textureName+"} not found in atlases");
 	}
-	img.width = tx.frame.width / 100 * w;
-	img.height = tx.frame.height / 100 * h;
+	//img.width = tx.frame.width / 100 * w;
+	//img.height = tx.frame.height / 100 * h;
+	img.style.backgroundSize = (tx.frame.width/100 * w)+"px "+(tx.frame.height/100 * h)+"px";
 	//Move image to proper location
 	let fw = tx.frame.frameWidth;	if (fw == undefined) fw = tx.frame.width;
 	let fh = tx.frame.frameHeight;	if (fh == undefined) fh = tx.frame.height;
@@ -113,10 +116,12 @@ function set_tile_image(atlases, img, textureName, w, h){
 	let fy = tx.frame.frameY;	if (fy == undefined) fy = 0;
 	//If the subtexture has frameX, frameY, frameWidth, and frameHeight, use those values
 	
-	img.style.marginLeft = (-fw/2 - fx) / 100 * w;
-	img.style.marginTop  = (-fh/2 - fy) / 100 * h;
-    	img.style.transformOrigin = ""+( (fw/2-(-fx)) / 100 * w )+"px "+( (fh/2-(-fy)) / 100 * h )+"px";
-	img.src = tx.img.src;
+	//img.style.marginLeft = (-fw/2 - fx) / 100 * w;
+	//img.style.marginTop  = (-fh/2 - fy) / 100 * h;
+	img.style.backgroundPosition = (fw/2 + fx)+"px "+(fh/2 + fy)+"px";
+    	//img.style.transformOrigin = ""+( (fw/2-(-fx)) / 100 * w )+"px "+( (fh/2-(-fy)) / 100 * h )+"px";
+	//img.src = tx.img.src;
+	img.style.backgroundImage = "url("+tx.img.src+")";
 } //set_tile_to_img
 
 function get_static_texture (owner, type){
@@ -174,15 +179,17 @@ class Pathogen {
 				let row = [];
 				this.tileImgs[this.tileImgs.length] = row;
 				for (let c=0; c<b.width; c++){
-					let img = document.createElement("img");
+					let img = document.createElement("div");
 					img.style.position = "absolute";
-					img.style.left = (100* (c+0.5) / b.width) + "%";
-					img.style.top  = (100* (r+0.5) / b.height) + "%";
-					//img.style.width = (100/b.width)+"%";
-					//img.style.height = (100/b.height)+"%";
+					img.style.left = (100* (c-1) / b.width) + "%";
+					img.style.top  = (100* (r-1) / b.height) + "%";
+
+					img.style.width = (300/b.width)+"%";
+					img.style.height = (300/b.height)+"%";
 					//img.style.marginLeft = (-100/b.width/2)+"%";
 					//img.style.marginTop  = (-100/b.height/2)+"%";
-					//img.style.border = "1px white solid";
+					img.style.border = "1px white dashed";
+					img.style.backgroundRepeat = "no-repeat";
 					this.canvas.appendChild(img);
 					row[row.length] = img;
 					this.setStaticTileImage(c,r);
@@ -288,7 +295,7 @@ class Pathogen {
 
 	setStaticTileImage(col, row){
 		let tile = this.tiles[row][col];
-		this.tileImgs[row][col].style.transform = "rotate(0deg)";
+		//this.tileImgs[row][col].style.transform = "rotate(0deg)";
 		set_tile_image(this.atlases, this.tileImgs[row][col], get_static_texture(tile.owner, tile.type), this.getGameUnitW(), this.getGameUnitH());
 	}//setStaticTileImage
 
@@ -370,7 +377,7 @@ class Pathogen {
 			return;
 		}
 
-		this.tileImgs[row][col].style.transform = "rotate("+rotation+"deg)";
+		//this.tileImgs[row][col].style.transform = "rotate("+rotation+"deg)";
 		let self = this;
 		this.animate(this.tileImgs[row][col], txName, function(){self.setStaticTileImage(col, row);});
 		
