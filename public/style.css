@@ -32,22 +32,12 @@ body {
 #scoreboard {
 	position: absolute;
 	left: 25%;
-	right: 25%;
+	width: 50%;
 	top: 10px;
-	height: 50px;
+	height: 30px;
 
-	background: darkgray;
-	border-radius: 10px;
-}
-
-#scoreboard > div {
-	position: absolute;
-	top: 7px;
-	bottom: 7px;
-	left: 7px;
-	right: 7px;
-
-	background: white;
+	border-radius: 2px;
+	background: #222;
 }
 
 

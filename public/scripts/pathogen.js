@@ -202,6 +202,10 @@ class Pathogen {
 		this.res = {victory: false, type:"", player:""};
 		this.onwin = null;
 
+		if (this.graphics) {
+			this.scoreboard.ctx = this.canvas.scoreboard.getContext("2d");
+		}
+
 		//Store instances of waves, to iterate over 1 at a time
 		this.waves = [];
 		this.waves_buf = [];
@@ -688,7 +692,7 @@ class Pathogen {
 		
 
 		this.renderBorder();
-		//this.renderScoreboard();
+		this.renderScoreboard();
 		
 		return;
 
@@ -744,13 +748,13 @@ class Pathogen {
 		let colors = ["#953355", "#51739e"];
 		let solids = ["#762843", "#3b5372"];
 		let b = this.board;
-		let ctx = this.screen;
+		let ctx = this.scoreboard.ctx;
 
 		//Bounds of scoreboard relative to x,y of game canvas
-		let top = b.y-40;
-		let left = b.x;
-		let w = b.width*b.unit;
-		let h = 20;
+		let top = b.y-40;	top = 0;
+		let left = b.x;		left = 0;
+		let w = ctx.canvas.width;
+		let h = ctx.canvas.height;
 		//console.log("Scoreboard bounds");
 		//console.log({top:top,left:left,w:w,h:h});
 
@@ -768,16 +772,17 @@ class Pathogen {
 			ctx.fillRect(left,top,w*solid_val,h);
 			left += solid_val*w;
 		}
+		// Fill remainder of the bar light gray
 		ctx.fillStyle = bgColor;
-		ctx.fillRect(left, top, b.x+w-left, h);
+		ctx.fillRect(left, top, w-left, h);
 
 		//Reset left bound
-		left = b.x;
-		ctx.fillStyle = "#FFF"
-		for (let i=0; i<=10; i++){
-			ctx.fillRect(left-1,top,2,h);
-			left += w/10.0;
-		}
+		//left = 0;
+		//ctx.fillStyle = "#FFF"
+		//for (let i=0; i<=10; i++){
+			//ctx.fillRect(left,top,2,h);
+			//left += w/10.0;
+		//}
 		
 	}//renderScoreboard
 

@@ -70,7 +70,7 @@
 	</div> <!-- Lobby Screen --!>
 
 	<div id="game-window" style="display: none;">
-		<div id="scoreboard"></div>
+		<canvas id="scoreboard"></canvas>
 
 		<div id="game-canvas" class="pathogen-window"></div>
 	
@@ -173,6 +173,8 @@
 		//canvas.width = document.body.clientWidth/3;
 		//canvas.height = document.body.clientHeight/3;
 
+	canvas.scoreboard = document.getElementById("scoreboard");
+
 	player = {auth_key: -1, id:-1, index:0};
 
 	var atlases = new TextureAtlasGroup(["res/HD_BlueSprites_1.xml",
@@ -182,6 +184,9 @@
 						loadControlBoxImages);
 
 	function newGame(){
+		canvas.scoreboard.width = canvas.scoreboard.clientWidth;
+		canvas.scoreboard.height = canvas.scoreboard.clientHeight;
+
 		client.game = new Pathogen(client.cols, client.rows, canvas, atlases);
 		client.game.onwin = endgame;
 		client.game.render();
