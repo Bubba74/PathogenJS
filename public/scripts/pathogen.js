@@ -152,6 +152,7 @@ class Pathogen {
 		this.atlases = atlases;
 		if (canvas){
 			this.canvas = canvas;
+			this.graphics = true;
 		}
 
 		this.board = {
@@ -168,7 +169,7 @@ class Pathogen {
 			this.tiles[this.tiles.length] = row;
 		}
 
-		if (this.canvas){
+		if (this.graphics){
 			this.tileImgs = [];
 			for (let r=0; r<b.height; r++){
 				let row = [];
@@ -208,6 +209,8 @@ class Pathogen {
 		this.animation_delay = 300;
 		this.gifDur = 14*20;
 
+		if (!this.graphics) this.animation_delay = 0;
+
 		this.turn = 0; //0 == Player 1
 		this.p1color = "#00ff00";
 		this.p2color = "#0000ff";
@@ -226,6 +229,8 @@ class Pathogen {
 	} //getGameUnit
 
 	updateScoreboard(){
+		if (!this.graphics) return;
+
 		this.scoreboard.p0 = 0;
 		this.scoreboard.p1 = 0;
 		this.scoreboard.p0_solid = 0;
@@ -287,12 +292,14 @@ class Pathogen {
 	}//resetModifiers
 
 	setStaticTileImage(col, row){
+		if (!this.graphics) return;
 		let tile = this.tiles[row][col];
 		this.tileImgs[row][col].style.transform = "rotate(0deg)";
 		set_tile_image(this.atlases, this.tileImgs[row][col], get_static_texture(tile.owner, tile.type), this.getGameUnitW(), this.getGameUnitH());
 	}//setStaticTileImage
 
 	animate(img, animation, callback, animationDur=14, i=0){
+		if (!this.graphics) return;
 		let speed = 1;
 		let animations = true;
 		if (i >= animationDur || !animations) {
@@ -308,6 +315,7 @@ class Pathogen {
 	} //animate
 		
 	animateEvolve(col, row){
+		if (!this.graphics) return;
 		let colors = ["Red", "Blue", "Green", "Yellow"];
 
 		let tile  = this.tiles[row][col];
@@ -327,6 +335,7 @@ class Pathogen {
 	} //animateEvolve
 
 	animateDestruct(col, row, type, owner){
+		if (!this.graphics) return;
 		let colors = ["Red", "Blue", "Green", "Yellow"];
 
 		let tile  = this.tiles[row][col];
@@ -339,6 +348,7 @@ class Pathogen {
 	} //animateDestruct
 
 	animateSplit(col, row, ESWN){
+		if (!this.graphics) return;
 		let colors = ["Red", "Blue", "Green", "Yellow"];
 
 		let owner = this.tiles[row][col].owner;
@@ -672,7 +682,7 @@ class Pathogen {
 
 
 	render (clear=true) {
-		if (!this.canvas) return;
+		if (!this.graphics) return;
 		//if (clear)
 			//this.screen.clearRect(0,0,this.canvas.width,this.canvas.height);
 		
@@ -705,6 +715,8 @@ class Pathogen {
 	}//render
 
 	renderBorder (){
+		if (!this.graphics) return;
+
 		let colors = ["#953355", "#51739e"];
 
 		//Just change the outline of the div element
@@ -727,6 +739,7 @@ class Pathogen {
 	}//renderBorder
 
 	renderScoreboard(){
+		if (!this.graphics) return;
 		let bgColor = "#22222277";
 		let colors = ["#953355", "#51739e"];
 		let solids = ["#762843", "#3b5372"];
